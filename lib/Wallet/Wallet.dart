@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aov_farmage/ProductDetails/ProductDetails.dart';
 class Wallet extends StatefulWidget {
   const Wallet({Key key}) : super(key: key);
 
@@ -148,7 +149,7 @@ class _WalletState extends State<Wallet> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),),
                       onPressed: (){
-                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
+                       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ProductDetails()));
                       },
                      color: Colors.white,
                       child: Padding(

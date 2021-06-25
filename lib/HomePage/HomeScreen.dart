@@ -2,6 +2,8 @@ import 'package:aov_farmage/AddCart/AddCart.dart';
 import 'package:aov_farmage/ChooseDeliveryOption/ChooseDeliveryOption.dart';
 import 'package:aov_farmage/ContactUs/ContactUs.dart';
 import 'package:aov_farmage/EditProfile/EditProfile.dart';
+import 'package:aov_farmage/MuttonScreen/Mutton.dart';
+import 'package:aov_farmage/OrderHistory/OrderHistory.dart';
 import 'package:aov_farmage/OrderStatus/OrderStatus.dart';
 import 'package:aov_farmage/OurBlog/OurBlog.dart';
 import 'package:aov_farmage/PaymentMethod/PaymentMethod.dart';
@@ -10,6 +12,7 @@ import 'package:aov_farmage/Wallet/Wallet.dart';
 import 'package:aov_farmage/YourCart/YourCart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:aov_farmage/MyAccount/MyAccount.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key key}) : super(key: key);
 
@@ -113,17 +116,18 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: Icon(Icons.logout,color: Colors.orangeAccent,),
               title: Text('LOGOUT',),
               onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>OrderHistory()));
               },
             ),
           ],
         ),
       ),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(150.0),
+        preferredSize: Size.fromHeight(170.0),
         child:   Column(
           children: [
             SizedBox(height: 20,),
-            FlutterLogo(size: 50,),
+            Image.asset('images/logo.png',width: 80,height: 80,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -137,9 +141,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text('Current Location'),
                 ),
                 Spacer(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.account_circle_outlined,color: Colors.orangeAccent,),
+                InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>MyAccount()));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.account_circle_outlined,color: Colors.orangeAccent,),
+                  ),
                 ),
                 InkWell(
                   onTap: (){
@@ -206,20 +215,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.only(top: 20),
-                    width: 70,
-                    height: 70,
-                    child: Column(
-                      children: [
-                       CircleAvatar(
-                         child: FlutterLogo(),
-                       ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text('MUTTON'),
-                        )
-                      ],
+                  InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Mutton()));
+
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(top: 20),
+                      width: 70,
+                      height: 70,
+                      child: Column(
+                        children: [
+                         CircleAvatar(
+                           child: FlutterLogo(),
+                         ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Text('MUTTON'),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   Container(
@@ -388,9 +403,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                  child: Text('MRP:240',style: TextStyle(color: Colors.grey),),
                                ),
                                Container(
-                                 width:150,
+                                 width:130,
                                  height: 20,
                                  padding: EdgeInsets.only(left: 10,right: 10),
+                                 margin: EdgeInsets.only(left: 20),
                                  child: RaisedButton(
                                    shape: RoundedRectangleBorder(
                                      borderRadius: BorderRadius.all(Radius.circular(20)),),
@@ -398,7 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>YourCart()));
                                    },
                                    color: Colors.orangeAccent,
-                                   child: Text('Add To Card',style: TextStyle(color: Colors.white,fontSize: 17),),),
+                                   child: Text('Add To Card',style: TextStyle(color: Colors.white,fontSize: 14),),),
                                ),
                              ],
                            ),

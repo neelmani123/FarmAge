@@ -18,8 +18,9 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 100,),
-            Center(child: FlutterLogo(size: 30,)),
-            SizedBox(height: 150,),
+            Center(
+                child: Image.asset('images/logo.png',width: 100,height: 100,),),
+            SizedBox(height: 120,),
             Padding(
               padding: const EdgeInsets.only(left: 35),
               child: Text('Enter Your Mobile Number',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),

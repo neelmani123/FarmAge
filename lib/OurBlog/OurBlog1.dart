@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 class OurBlog1 extends StatefulWidget {
   const OurBlog1({Key key}) : super(key: key);
-
   @override
   _OurBlog1State createState() => _OurBlog1State();
 }
