@@ -1,64 +1,39 @@
 import 'package:aov_farmage/HomePage/HomeScreen.dart';
-import 'package:aov_farmage/LoginOtpScreen/LoginOtpScreen.dart';
-import 'package:aov_farmage/RegisterPage/RegisterScreen.dart';
 import 'package:aov_farmage/helper/http_services.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key key}) : super(key: key);
+import 'package:shared_preferences/shared_preferences.dart';
+class LoginOtpScreen extends StatefulWidget {
+  final mobile;
+  const LoginOtpScreen({this.mobile,Key key}) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LoginOtpScreenState createState() => _LoginOtpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginOtpScreenState extends State<LoginOtpScreen> {
   bool _isLoading;
   HttpServices _httpService = HttpServices();
-  TextEditingController mobile_controller=new TextEditingController();
-
-  _send_otp(){
-    String validate = validateMobile(mobile_controller.text);
-    if (validate == null) {
-      login_api();
-
-    }else{
-      Fluttertoast.showToast(msg: validate);
-    }
-  }
-  Future<void> login_api()async{
-    var res=await _httpService.user_login(number: mobile_controller.text);
+  TextEditingController otp_controller=new TextEditingController();
+  _otpVerify()async{
+    var res=await _httpService.user_otp_login(number: widget.mobile,otp: otp_controller.text);
     if(res.status==true)
       {
-       setState(() {
-         _isLoading=false;
-         Fluttertoast.showToast(msg: res.message);
-         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>LoginOtpScreen(mobile: mobile_controller.text,)));
-       });
-      }
-    else if(res.message=="number is not regestered")
-      {
-        setState(() {
+        setState(() async{
           _isLoading=false;
           Fluttertoast.showToast(msg: res.message);
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>RegisterScreen()));
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString('name', res.data.name);
+          prefs.setString('email', res.data.email);
+          prefs.setString('token', res.data.jwtToken);
+          prefs.setString('number', res.data.phone);
+          prefs.setString('id', res.data.id);
+
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
         });
       }
   }
-  String validateMobile(String value) {
-    String pattern = r'(^([9876]{1})([0-9]{9})$)';
-    RegExp regExp = new RegExp(pattern);
-    if (value.length == 0) {
-      _isLoading=false;
-      return 'Please enter mobile number';
-    } else if (!regExp.hasMatch(value)) {
-      _isLoading=false;
-      return 'Please enter valid mobile number';
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             SizedBox(height: 80,),
             Center(
-                child: Image.asset('images/logo.png',width: 100,height: 100,),),
+              child: Image.asset('images/logo.png',width: 100,height: 100,),),
             SizedBox(height: 100,),
             Padding(
               padding: const EdgeInsets.only(left: 35),
@@ -87,20 +62,41 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: new BorderRadius.circular(20.0),
                 ),
                 child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  controller: mobile_controller,
-                  inputFormatters: [
-                    WhitelistingTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(10),
-                  ],
+                  enabled: false,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.phone_android,color: Colors.black,),
+                      prefixIcon: Icon(Icons.phone_android,color: Colors.black,),
                       border: InputBorder.none,
-                      hintText: 'Enter Your Phone Number'
+                      hintText: '${widget.mobile}'
                   ),
                 )
             ),
-            SizedBox(height: 20,),
+           // SizedBox(height: 10,),
+            Container(
+                margin: EdgeInsets.only(left: 30,right: 30),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                    color: Colors.grey,
+                    style: BorderStyle.solid,
+                    width: 2.0,
+                  ),
+                  borderRadius: new BorderRadius.circular(20.0),
+                ),
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    WhitelistingTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(4),
+                  ],
+                  controller: otp_controller,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.phone_android,color: Colors.black,),
+                      border: InputBorder.none,
+                      hintText: 'Enter otp'
+                  ),
+                )
+            ),
+            SizedBox(height: 30,),
             Center(
               child: Container(
                 width:150,
@@ -109,13 +105,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20)),),
                   onPressed: (){
-                  setState(() {
-                    _send_otp();
-                    _isLoading=true;
-                  });
+                   setState(() {
+                     _otpVerify();
+                     _isLoading=true;
+                   });
                   },
                   color: Colors.orangeAccent,
-                  child:  _isLoading==true ?Container(height:20,width:20,child: CircularProgressIndicator(),):Text('VERIFY OTP',style: TextStyle(color: Colors.white,fontSize: 17),),),
+                  child:  _isLoading==true ?Container(height:20,width:20,child: CircularProgressIndicator(),):Text('Save',style: TextStyle(color: Colors.white,fontSize: 17),),),
               ),
             ),
             Row(

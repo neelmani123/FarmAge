@@ -133,13 +133,13 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Icon(Icons.menu,color: Colors.black,),
                 Padding(
-                  padding: const EdgeInsets.only(left: 90),
+                  padding: const EdgeInsets.only(left: 170),
                   child: Icon(Icons.location_on,color: Colors.orangeAccent,),
                 ),
-                Padding(
+               /* Padding(
                   padding: const EdgeInsets.only(left: 5),
                   child: Text('Current Location'),
-                ),
+                ),*/
                 Spacer(),
                 InkWell(
                   onTap: (){

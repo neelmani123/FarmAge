@@ -1,6 +1,9 @@
+import 'package:aov_farmage/EditProfile/profileModelData.dart';
 import 'package:aov_farmage/ThankYou/ThankYou.dart';
 import 'package:aov_farmage/ThankYou1/ThankYou1.dart';
+import 'package:aov_farmage/helper/http_services.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class EditProfile extends StatefulWidget {
   const EditProfile({Key key}) : super(key: key);
 
@@ -9,10 +12,31 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  bool _isLoading=true;
+  HttpServices _httpService = HttpServices();
+  Data data;
+
+  Future getProfileData()async{
+    var res= await _httpService.getProfile();
+    if(res.status==true)
+      {
+       setState(() {
+         _isLoading=false;
+         Fluttertoast.showToast(msg:res.message);
+         data=res.data;
+       });
+      }
+  }
+  @override
+  void initState() {
+    getProfileData();
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body: _isLoading==true?Container(child: Center(child: CircularProgressIndicator(),),):SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -90,7 +114,7 @@ class _EditProfileState extends State<EditProfile> {
                   decoration: InputDecoration(
                     // prefixIcon: Icon(Icons.phone_android,color: Colors.black,),
                       border: InputBorder.none,
-                      hintText: 'Jack Dever'
+                      hintText: '${data.name}'
                   ),
                 )
             ),
@@ -113,7 +137,7 @@ class _EditProfileState extends State<EditProfile> {
                   decoration: InputDecoration(
                     // prefixIcon: Icon(Icons.phone_android,color: Colors.black,),
                       border: InputBorder.none,
-                      hintText: 'jack@gmail.com'
+                      hintText: '${data.email}'
                   ),
                 )
             ),
@@ -136,7 +160,7 @@ class _EditProfileState extends State<EditProfile> {
                   decoration: InputDecoration(
                     // prefixIcon: Icon(Icons.phone_android,color: Colors.black,),
                       border: InputBorder.none,
-                      hintText: 'Male'
+                      hintText: '${data.gender}'
                   ),
                 )
             ),
