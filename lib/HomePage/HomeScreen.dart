@@ -10,6 +10,8 @@ import 'package:aov_farmage/PaymentMethod/PaymentMethod.dart';
 import 'package:aov_farmage/ReferAFriend/ReferAFriend.dart';
 import 'package:aov_farmage/Wallet/Wallet.dart';
 import 'package:aov_farmage/YourCart/YourCart.dart';
+import 'package:aov_farmage/helper/http_services.dart';
+import 'package:aov_farmage/model/CategoryListModel/CategoryListData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:aov_farmage/MyAccount/MyAccount.dart';
@@ -21,6 +23,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+bool _isLoading=true;
+  HttpServices _httpService = HttpServices();
+  List<Data>data=[];
+  Future<void>category_list_api()async{
+    var res=await _httpService.category_list_api();
+    if(res.status==true)
+      {
+        setState(() {
+          data=res.data;
+          _isLoading=false;
+          print(data);
+        });
+      }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    category_list_api();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: SingleChildScrollView(
+      body: _isLoading==true?Container(child: Center(child: CircularProgressIndicator(),),):SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,129 +218,36 @@ class _HomeScreenState extends State<HomeScreen> {
               width: MediaQuery.of(context).size.width,
               height: 100,
               color: Colors.orangeAccent,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(top: 20),
-                    width:70,
-                    height: 70,
-                    child: Column(
-                      children: [
-                       CircleAvatar(
-                         child: FlutterLogo(),
-                       ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text('CHICKEN'),
-                        )
-                      ],
-                    ),
-                  ),
-                  InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Mutton()));
-
-                    },
-                    child: Container(
-                      padding: EdgeInsets.only(top: 20),
-                      width: 70,
-                      height: 70,
-                      child: Column(
-                        children: [
-                         CircleAvatar(
-                           child: FlutterLogo(),
-                         ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text('MUTTON'),
-                          )
-                        ],
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                itemCount: data.length,
+                  itemBuilder: (context,index){
+                return Column(
+                  children: [
+                    InkWell(
+                      child: Container(
+                        padding: EdgeInsets.only(top: 20),
+                        width:80,
+                        height: 85,
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(data[index].image??''),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child: Text('${data[index].title??''}'),
+                            )
+                          ],
+                        ),
                       ),
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Mutton()));
+                      },
                     ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 20),
-                    width: 70,
-                    height: 70,
-                    child: Column(
-                      children: [
-                       CircleAvatar(
-                         child: FlutterLogo(),
-                       ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text('EAT'),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 20),
-                    width: 70,
-                    height: 70,
-                    child: Column(
-                      children: [
-                       CircleAvatar(
-                         child: FlutterLogo(),
-                       ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text('KABABS'),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 20),
-                    width: 70,
-                    height: 70,
-                    child: Column(
-                      children: [
-                       CircleAvatar(
-                         child: FlutterLogo(),
-                       ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text('SEA FOOD'),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 20),
-                    width: 70,
-                    height: 70,
-                    child: Column(
-                      children: [
-                       CircleAvatar(
-                         child: FlutterLogo(),
-                       ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text('EGGS'),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 20),
-                    width: 70,
-                    height: 70,
-                    child: Column(
-                      children: [
-                       CircleAvatar(
-                         child: FlutterLogo(),
-                       ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text('COOK'),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                  ],
+                );
+              })
             ),
             Container(
               margin: EdgeInsets.only(top: 10,left: 10,right: 10),
@@ -334,10 +263,10 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.only(left: 10,right: 10),
               child: Row(
                 children: [
-                  Text('BESTSELLER',style: TextStyle(fontSize:15,fontWeight: FontWeight.bold,letterSpacing: 1),),
+                  Text('BESTSELLER',style: TextStyle(fontSize:14,fontWeight: FontWeight.bold,),),
                   Spacer(),
                   Text('SEE ALL',style: TextStyle(color: Colors.grey),),
-                  Icon(Icons.arrow_forward_ios,size: 17,)
+                  Icon(Icons.arrow_forward_ios,size: 15,)
                 ],
               ),
             ),

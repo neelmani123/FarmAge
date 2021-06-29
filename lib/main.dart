@@ -52,7 +52,7 @@ Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Login
         photoSize: 300.0,
 
       ),*/
-      child: Image.asset('images/splash.png'),
+      child: Image.asset('images/splash1.jpg',fit: BoxFit.cover,),
     );
   }
 }

@@ -1,8 +1,10 @@
+import 'package:aov_farmage/HomePage/HomeScreen.dart';
 import 'package:aov_farmage/LoginPage/LoginScreen.dart';
 import 'package:aov_farmage/helper/http_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key key}) : super(key: key);
 
@@ -22,10 +24,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     var res=await _httpService.user_register_api(name: name_controller.text,email: email_controller.text,phone: phone_controller.text,gender: gender_controller.text);
     if(res.status==true)
       {
-        setState(() {
+        setState(() async{
           _isLoading=false;
           Fluttertoast.showToast(msg: res.message);
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>LoginScreen()));
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString('name', res.data.name);
+          prefs.setString('email', res.data.email);
+          prefs.setString('token', res.data.jwtToken);
+          prefs.setString('number', res.data.phone);
+          prefs.setString('id', res.data.id);
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
         });
       }
   }
@@ -153,14 +161,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     });
                   },
                   color: Colors.orangeAccent,
-                  child:  _isLoading==true ?Container(height:20,width:20,child: CircularProgressIndicator(),):Text('Save',style: TextStyle(color: Colors.white,fontSize: 17),),),
+                  child:  _isLoading==true ?Container(height:20,width:20,child: CircularProgressIndicator(),):Text('SignUp',style: TextStyle(color: Colors.white,fontSize: 17),),),
               ),
             ),
+            SizedBox(height: 30,),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Image.asset("images/circcle.png",height:220)
+                Image.asset("images/circcle.png",height:180)
               ],
             )
 

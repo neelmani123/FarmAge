@@ -1,9 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:aov_farmage/EditProfile/profileModelData.dart';
 import 'package:aov_farmage/ThankYou/ThankYou.dart';
 import 'package:aov_farmage/ThankYou1/ThankYou1.dart';
 import 'package:aov_farmage/helper/http_services.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 class EditProfile extends StatefulWidget {
   const EditProfile({Key key}) : super(key: key);
 
@@ -15,6 +21,63 @@ class _EditProfileState extends State<EditProfile> {
   bool _isLoading=true;
   HttpServices _httpService = HttpServices();
   Data data;
+  final ImagePicker _picker = ImagePicker();
+  String imageUrl="";
+  PickedFile _imageFiler;
+  TextEditingController name_controller=new TextEditingController();
+  TextEditingController gender_controller=new TextEditingController();
+  //Here get Image from Camera and Gallery
+  void getImage1(source) async {
+    final pickedFile = await _picker.getImage(source: source);
+    setState(() {
+      _imageFiler = pickedFile;
+      print("Pic Name:${File(_imageFiler.path)}");
+    });
+  }
+  Widget bottomSheet() {
+    return Container(
+      height: 100.0,
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Column(
+        children: [
+          Text(
+            "Choose Profile photo",
+            style: TextStyle(fontSize: 20.0),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton.icon(
+                icon: Icon(Icons.camera, color: Colors.green),
+                onPressed: () {
+                  getImage1(ImageSource.camera);
+                  Navigator.pop(context);
+                },
+                label: Text(
+                  "Camera",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              TextButton.icon(
+                icon: Icon(Icons.image, color: Colors.green),
+                onPressed: () {
+                  getImage1(ImageSource.gallery);
+                  Navigator.pop(context);
+
+                },
+                label: Text("Gallery",style: TextStyle(color: Colors.black),),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
 
   Future getProfileData()async{
     var res= await _httpService.getProfile();
@@ -26,6 +89,35 @@ class _EditProfileState extends State<EditProfile> {
          data=res.data;
        });
       }
+  }
+  Future _uploadImage()async
+  {
+    _isLoading=true;
+    final _prefs = await SharedPreferences.getInstance();
+    String fileName1 = _imageFiler.path.split('/').last;
+    try {
+      FormData formData = new FormData.fromMap({
+        "jwtToken": _prefs.getString('token'),
+        "profile_img":await  MultipartFile.fromFile(
+            _imageFiler.path,filename: fileName1),
+        "name":name_controller.text,
+        "gender":gender_controller.text,
+      });
+      Response response = await Dio().post(
+          "https://devclub.co.in/aov_farmage/admin/api/Users_api/profile_update",
+          data: formData);
+      print("File Upload Response $response");
+      setState(() {
+        Fluttertoast.showToast(msg: "Update  Successfully.");
+        _isLoading=false;
+       // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ThankYou1()));
+      });
+      Map<String,dynamic> data=jsonDecode(response.data);
+      var sms=data['message'];
+      print("Result is:${sms}");
+    } catch (e) {
+      print("Exception caught $e");
+    }
   }
   @override
   void initState() {
@@ -69,7 +161,8 @@ class _EditProfileState extends State<EditProfile> {
                   backgroundColor: Colors.black,
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: NetworkImage("https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg"),
+                    backgroundImage: _imageFiler==null?NetworkImage("${data.image??''}"):
+                    FileImage(File(_imageFiler.path)),
                   ),
                 ),
               ),
@@ -83,9 +176,9 @@ class _EditProfileState extends State<EditProfile> {
                   bottom: 20,
                   child: InkWell(
                     onTap: (){
-                      /*showModalBottomSheet(
+                      showModalBottomSheet(
                                 context: context,
-                                builder: (builder) => bottomSheet());*/
+                                builder: (builder) => bottomSheet());
                     },
                     child: Container(
                       child: Icon(Icons.edit,color: Colors.black,),
@@ -111,6 +204,8 @@ class _EditProfileState extends State<EditProfile> {
                   borderRadius: new BorderRadius.circular(20.0),
                 ),
                 child: TextFormField(
+                  controller: name_controller,
+                  keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     // prefixIcon: Icon(Icons.phone_android,color: Colors.black,),
                       border: InputBorder.none,
@@ -157,6 +252,8 @@ class _EditProfileState extends State<EditProfile> {
                   borderRadius: new BorderRadius.circular(20.0),
                 ),
                 child: TextFormField(
+                  controller: gender_controller,
+                  keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     // prefixIcon: Icon(Icons.phone_android,color: Colors.black,),
                       border: InputBorder.none,
@@ -173,7 +270,10 @@ class _EditProfileState extends State<EditProfile> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),),
                     onPressed: (){
-                       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ThankYou1()));
+                       setState(() {
+                         _uploadImage();
+                         _isLoading=true;
+                       });
                     },
                     color: Colors.orangeAccent,
                     child: Text('Update',style: TextStyle(color: Colors.white,fontSize: 17),),),

@@ -3,6 +3,7 @@ import 'package:aov_farmage/LoginOtpScreen/LoginOtpModel.dart';
 import 'package:aov_farmage/LoginPage/LoginModel.dart';
 import 'package:aov_farmage/EditProfile/profileModel.dart';
 import 'package:aov_farmage/helper/api_helper.dart';
+import 'package:aov_farmage/model/CategoryListModel/CategoryListModel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:aov_farmage/model/RegisterMode/RegisterModel.dart';
@@ -70,6 +71,21 @@ class HttpServices {
       return null;
     }
 }
+Future<Login>user_otp_register({String number})async{
+  Map reqBody={
+    "number":number
+  };
+  final response=await _apiHelper.post('Users_api/request_otp_for_regester', reqBody);
+  try{
+    return Login.fromJson(response);
+  }
+  catch(e)
+  {
+    showExceptionToast();
+    return null;
+  }
+    
+}
 
 Future<ProfileModel> getProfile()async{
   final prefs = await SharedPreferences.getInstance();
@@ -81,6 +97,24 @@ Future<ProfileModel> getProfile()async{
       return ProfileModel.fromJson(response);
     }
     catch(e)
+  {
+    showExceptionToast();
+    return null;
+  }
+}
+
+Future<CategoryListModel>category_list_api()async{
+  final prefs = await SharedPreferences.getInstance();
+  Map reqBody={
+    "jwtToken":prefs.getString('token'),
+    "search":"",
+    "limit":""
+  };
+  final response=await _apiHelper.post('Users_api/categories_list', reqBody);
+  try{
+    return CategoryListModel.fromJson(response);
+  }
+  catch(e)
   {
     showExceptionToast();
     return null;

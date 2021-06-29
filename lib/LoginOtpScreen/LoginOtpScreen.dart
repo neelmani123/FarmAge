@@ -29,8 +29,7 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
           prefs.setString('token', res.data.jwtToken);
           prefs.setString('number', res.data.phone);
           prefs.setString('id', res.data.id);
-
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
         });
       }
   }
@@ -114,11 +113,12 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
                   child:  _isLoading==true ?Container(height:20,width:20,child: CircularProgressIndicator(),):Text('Save',style: TextStyle(color: Colors.white,fontSize: 17),),),
               ),
             ),
+            SizedBox(height: 30,),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Image.asset("images/circcle.png",height:220)
+                Image.asset("images/circcle.png",height:180)
               ],
             )
 
