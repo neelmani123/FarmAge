@@ -2,7 +2,7 @@ import 'package:aov_farmage/AddCart/AddCart.dart';
 import 'package:aov_farmage/ChooseDeliveryOption/ChooseDeliveryOption.dart';
 import 'package:aov_farmage/ContactUs/ContactUs.dart';
 import 'package:aov_farmage/EditProfile/EditProfile.dart';
-import 'package:aov_farmage/MuttonScreen/Mutton.dart';
+import 'package:aov_farmage/CategoryDetails/Mutton.dart';
 import 'package:aov_farmage/OrderHistory/OrderHistory.dart';
 import 'package:aov_farmage/OrderStatus/OrderStatus.dart';
 import 'package:aov_farmage/OurBlog/OurBlog.dart';
@@ -242,7 +242,7 @@ bool _isLoading=true;
                         ),
                       ),
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Mutton()));
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Mutton(cat_id: data[index].categoryID,)));
                       },
                     ),
                   ],

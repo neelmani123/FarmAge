@@ -1,24 +1,59 @@
+import 'package:aov_farmage/CategoryDetails/ProductList/ProductListData.dart';
+import 'package:aov_farmage/YourCart/YourCart.dart';
+import 'package:aov_farmage/helper/http_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class Mutton extends StatefulWidget {
-  const Mutton({Key key}) : super(key: key);
+  final cat_id;
+  const Mutton({this.cat_id,Key key}) : super(key: key);
 
   @override
   _MuttonState createState() => _MuttonState();
 }
 
 class _MuttonState extends State<Mutton> {
+  bool _isLoading=true;
+  HttpServices _httpService = HttpServices();
+  List<Data>data=[];
+  Future<void>product_list_api()async{
+    var res=await _httpService.product_details(catId: widget.cat_id);
+    if(res.status==true)
+      {
+        setState(() {
+          _isLoading=false;
+          data=res.data;
+          print("Data is:${data}");
+        });
+      }
+  }
+  Future<void>addToCart(String productID)async{
+    var res=await _httpService.add_to_cart(productId: productID,variantId: "10053");
+    if(res.status==true)
+      {
+        setState(() {
+          Fluttertoast.showToast(msg: res.message);
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>YourCart()));
+        });
+      }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    product_list_api();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: _isLoading==true?Container(child: Center(child: CircularProgressIndicator(),),):Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             height: 630,
             child: ListView.builder(
-              itemCount: 2,
+              itemCount: data.length,
                 itemBuilder: (context,index){
               return Container(
                 margin: EdgeInsets.all(5),
@@ -30,15 +65,16 @@ class _MuttonState extends State<Mutton> {
                   )
                 ),
                 width: MediaQuery.of(context).size.width,
-                height: 370,
+                height: 390,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset('images/banner.png',),
+                    Image.network('${data[index].productImage??''}',fit: BoxFit.fitHeight
+                      ,),
                     Padding(
                       padding: const EdgeInsets.only(left: 15),
-                      child: Text('Goat Curry Cut(Raan,Chaamp,Puth)',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold,letterSpacing: 2),),
+                      child: Text('${data[index].productName??''}',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold,letterSpacing: 2),),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 15,top: 5),
@@ -58,7 +94,7 @@ class _MuttonState extends State<Mutton> {
                               thickness: 2,
                             ),
                           ),
-                          Text('Curry Cut',style: TextStyle(color: Colors.grey),),
+                          Text('${data[index].catName??''}',style: TextStyle(color: Colors.grey),),
                         ],
                       ),
                     ),
@@ -66,20 +102,16 @@ class _MuttonState extends State<Mutton> {
                       padding: const EdgeInsets.only(left: 15,top: 5),
                       child: Row(
                         children: [
-                          Text('Gross Weight:590gms',style: TextStyle(color: Colors.grey),),
+                          Text('Gross Weight:590gms',style: TextStyle(color: Colors.grey,fontSize: 12),),
                           Padding(
                             padding: const EdgeInsets.only(left: 10),
-                            child: Text('Pieces:3',style: TextStyle(color: Colors.grey),),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Text('Net Weight:500gms',style: TextStyle(color: Colors.grey),),
+                            child: Text('Net Weight:500gms',style: TextStyle(color: Colors.grey,fontSize: 12),),
                           ),
                         ],
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 15,top: 5),
+                      padding: const EdgeInsets.only(left: 15,top: 0),
                       child: Row(
                         children: [
                           Text('420.00'),
@@ -102,7 +134,9 @@ class _MuttonState extends State<Mutton> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(10)),),
                                   onPressed: (){
-                                    // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
+                                    setState(() {
+                                      addToCart(data[index].productID);
+                                    });
                                   },
                                   color: Colors.orangeAccent,
                                   child: Text('Add To Cart',style: TextStyle(color: Colors.white,fontSize: 17),),),

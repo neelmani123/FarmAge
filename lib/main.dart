@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:aov_farmage/HomePage/HomeScreen.dart';
 import 'package:aov_farmage/LoginPage/LoginScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 void main() => runApp(MyApp());
@@ -39,7 +41,17 @@ class _Splash2State extends State<Splash2> {
     return new Timer(_duration, navigationPage);
   }
 Future<void> navigationPage()async{
-Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>LoginScreen()));
+  var _prefs = await SharedPreferences.getInstance();
+  String  _userId = _prefs.getString('token')??'';
+if(_userId!=null &&_userId!='')
+  {
+    print("User Id is:${_userId}");
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
+
+  }
+else{
+  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>LoginScreen()));
+}
 }
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,8 @@
+import 'package:aov_farmage/ChangeAddress/ChnageAddress.dart';
+import 'package:aov_farmage/helper/http_services.dart';
 import 'package:flutter/material.dart';
+import 'package:aov_farmage/model/YourCartList/YourCartLIstData.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class YourCart extends StatefulWidget {
   const YourCart({Key key}) : super(key: key);
 
@@ -7,10 +11,42 @@ class YourCart extends StatefulWidget {
 }
 
 class _YourCartState extends State<YourCart> {
+  bool _isLoading=true;
+  List<Data>data=[];
+  HttpServices _httpService = HttpServices();
+  Future<void>my_cart()async{
+    var res=await _httpService.my_cart();
+    if(res.status==true)
+      {
+        setState(() {
+          data=res.data;
+          _isLoading=false;
+          Fluttertoast.showToast(msg: res.message);
+          print("Data is:${data}");
+        });
+      }
+  }
+  Future<void>remove_cart(String productId,String variantId)async{
+    var res=await _httpService.cart_remove(productId: productId,variantId: variantId);
+    if(res.status==true)
+      {
+        setState(() {
+          Fluttertoast.showToast(msg: res.message);
+          my_cart();
+          _isLoading=false;
+        });
+      }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    my_cart();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body: _isLoading==true?Container(child: Center(child: CircularProgressIndicator(),),):SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -38,31 +74,47 @@ class _YourCartState extends State<YourCart> {
             Container(
               width: MediaQuery.of(context).size.width,
               height: 400,
-              child: ListView(
-                children: [
-                  Card(
+              child: ListView.builder(
+                itemCount: data.length,
+                  itemBuilder: (context,index){
+                  return Card(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(color: Colors.grey),
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                     child: ListTile(
                       leading: Container(
-                        height: 200,
-                          child: Image.asset('images/banner.png')),
-                     // trailing: Icon(Icons.cancel_outlined,size: 12,),
+                          height: 200,
+                          child: Image.network('${data[index].productImage??''}',fit: BoxFit.cover,)),
+                      // trailing: Icon(Icons.cancel_outlined,size: 12,),
                       title: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
-                            child: Text('Boneless Cubes',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+                            child: Row(
+                              children: [
+                                Text('${data[index].productName??''}',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+                                Spacer(),
+                                InkWell(
+                                  onTap: ()
+                                  {
+                                    setState(() {
+                                      _isLoading=true;
+                                      remove_cart(data[index].productID, data[index].variantID);
+                                    });
+
+                                  },
+                                    child: Icon(Icons.clear,size: 15,color: Colors.grey,))
+                              ],
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: Row(
                               children: [
-                                Text('No of Pieces:20',style: TextStyle(color: Colors.grey),),
+                                Text('No of Pieces:${data[index].qty??''}',style: TextStyle(color: Colors.grey),),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 40),
                                   child: Text('Serves:4',style: TextStyle(color: Colors.grey),),
@@ -88,32 +140,38 @@ class _YourCartState extends State<YourCart> {
                           Row(
                             children: [
                               Icon(Icons.link,size: 17,color: Colors.grey,),
-                              Text('200',style: TextStyle(color: Colors.grey),),
+                              Text('${data[index].mrp??''}',style: TextStyle(color: Colors.grey),),
                               Spacer(),
                               Container(
                                 width:30,
                                 height: 30,
-                                //margin: EdgeInsets.only(left:10,right: 15),
+                                margin: EdgeInsets.only(right: 5),
                                 child: RaisedButton(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),),
                                   onPressed: (){
                                   },
                                   color: Colors.grey,
-                                  child: Text('-',style: TextStyle(color: Colors.black,fontSize: 20),),),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: Text('-',style: TextStyle(color: Colors.black,fontSize: 20),),
+                                  ),),
                               ),
                               Container(
                                 width:30,
                                 height: 30,
                                 //padding: EdgeInsets.only(left: 10,right: 10),
-                               // margin: EdgeInsets.only(left:10,right: 15),
+                                 margin: EdgeInsets.only(right: 5),
                                 child: RaisedButton(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),),
                                   onPressed: (){
                                   },
                                   color: Colors.orangeAccent,
-                                  child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20),),),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20),),
+                                  ),),
                               ),
                               Container(
                                 width:30,
@@ -134,197 +192,8 @@ class _YourCartState extends State<YourCart> {
                         ],
                       ),
                     ),
-                  ),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: ListTile(
-                      leading: Container(
-                        height: 200,
-                          child: Image.asset('images/banner.png')),
-                      title: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text('Boneless Cubes',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              children: [
-                                Text('No of Pieces:20',style: TextStyle(color: Colors.grey),),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 40),
-                                  child: Text('Serves:4',style: TextStyle(color: Colors.grey),),
-                                )
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              children: [
-                                Text('Gross Wt:467gms',style: TextStyle(color: Colors.grey),),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 22),
-                                  child: Text('Net wt:500gms',style: TextStyle(color: Colors.grey),),
-                                )
-                              ],
-                            ),
-                          ),
-                          Divider(
-                            color: Colors.black,
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.link,size: 17,color: Colors.grey,),
-                              Text('200',style: TextStyle(color: Colors.grey),),
-                              Spacer(),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //margin: EdgeInsets.only(left:10,right: 15),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.grey,
-                                  child: Text('-',style: TextStyle(color: Colors.black,fontSize: 20),),),
-                              ),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //padding: EdgeInsets.only(left: 10,right: 10),
-                               // margin: EdgeInsets.only(left:10,right: 15),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.orangeAccent,
-                                  child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20),),),
-                              ),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //padding: EdgeInsets.only(left: 10,right: 10),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.grey,
-                                  child: Text('+',style: TextStyle(color: Colors.black,fontSize: 20),),),
-                              ),
-                              SizedBox(height: 10,)
-
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: ListTile(
-                      leading: Container(
-                        height: 200,
-                          child: Image.asset('images/banner.png')),
-                      title: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text('Boneless Cubes',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              children: [
-                                Text('No of Pieces:20',style: TextStyle(color: Colors.grey),),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 40),
-                                  child: Text('Serves:4',style: TextStyle(color: Colors.grey),),
-                                )
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              children: [
-                                Text('Gross Wt:467gms',style: TextStyle(color: Colors.grey),),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 22),
-                                  child: Text('Net wt:500gms',style: TextStyle(color: Colors.grey),),
-                                )
-                              ],
-                            ),
-                          ),
-                          Divider(
-                            color: Colors.black,
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.link,size: 17,color: Colors.grey,),
-                              Text('200',style: TextStyle(color: Colors.grey),),
-                              Spacer(),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //margin: EdgeInsets.only(left:10,right: 15),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.grey,
-                                  child: Text('-',style: TextStyle(color: Colors.black,fontSize: 20),),),
-                              ),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //padding: EdgeInsets.only(left: 10,right: 10),
-                               // margin: EdgeInsets.only(left:10,right: 15),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.orangeAccent,
-                                  child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20),),),
-                              ),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //padding: EdgeInsets.only(left: 10,right: 10),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.grey,
-                                  child: Text('+',style: TextStyle(color: Colors.black,fontSize: 20),),),
-                              ),
-                              SizedBox(height: 10,)
-
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                  );
+                  })
             ),
             SizedBox(height: 20,),
              Container(
@@ -524,7 +393,7 @@ class _YourCartState extends State<YourCart> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5)),),
                         onPressed: (){
-                          // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ChangeAddress()));
                         },
                         color: Colors.orangeAccent,
                         child: Row(
