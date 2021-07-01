@@ -34,6 +34,7 @@ class _ChangeAddressState extends State<ChangeAddress> {
                 ),
               ),
             ),
+            SizedBox(height: 100,),
             SlidingUpPanel(
               minHeight: 30,
               maxHeight: 200,
