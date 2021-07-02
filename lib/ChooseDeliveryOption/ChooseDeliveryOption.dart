@@ -1,5 +1,9 @@
+import 'package:aov_farmage/helper/http_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
+import 'package:aov_farmage/model/Slots/SlotsData.dart';
 class ChooseDeliveryOption extends StatefulWidget {
   const ChooseDeliveryOption({Key key}) : super(key: key);
 
@@ -8,11 +12,92 @@ class ChooseDeliveryOption extends StatefulWidget {
 }
 
 class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
+  DateTime _date = DateTime.now();
+  bool _isLoading=true;
+  bool loading=true;
+  String _formatteddate="";
+  List<Data>data1=[];
+  int selectedRadio;
+  String choice;
+  HttpServices _httpServices=new HttpServices();
+  Future<void>slots_list()async{
+    var res=await _httpServices.slots_list();
+    if(res.status==true)
+      {
+        setState(() {
+          Fluttertoast.showToast(msg: res.message);
+          data1=res.data;
+          _isLoading=false;
+          print("Duration is:${res.data}");
+        });
+      }
+  }
+  Future<Null> selectDate(BuildContext context) async {
+    DateTime _datePicker = await showDatePicker(
+      context: context,
+      initialDate: _date,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2030),
+    );
+    if (_datePicker != null && _datePicker != _date) {
+      setState(() {
+        _date = _datePicker;
+      });
+    }
+  }
+  setSelectedRadio(int val) {
+    setState(() {
+      selectedRadio = val;
+      print('SelectedRadio Is:${selectedRadio}');
+      payment_mode(selectedRadio);
+
+    });
+  }
+  Future payment_mode(int selected)
+  {
+
+    switch(selected)
+    {
+      case 1:
+        choice="Payment on Delivery";
+        print(choice);
+        break;
+      case 2:
+        choice="Cash on Delivery";
+        print(choice);
+        break;
+      default:
+        choice = null;
+    }
+  }
+  Future<void>order(String slot)async{
+    var res=await _httpServices.order(date: _formatteddate,slot: slot,address_id: "1",payment_mode: choice);
+    if(res.status==true)
+      {
+        setState(() {
+          Fluttertoast.showToast(msg: res.message);
+          loading=false;
+        });
+      }
+    else if(res.status==false)
+      {
+        Fluttertoast.showToast(msg: res.message);
+        loading=false;
+      }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    slots_list();
+    selectedRadio = 0;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    _formatteddate = new DateFormat.yMMMd().format(_date);
     return Scaffold(
-      body: SingleChildScrollView(
+      body: _isLoading==true?Container(child: Center(child: CircularProgressIndicator(),),):SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -57,37 +142,54 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
+                InkWell(
+                  onTap: (){
+                    setState(() {
+                      selectDate(context);
+                      print(_formatteddate);
+                    });
+                  },
+                  child: Card(
+                    child: Container(
+                      padding: EdgeInsets.only(left: 5),
+                      width:MediaQuery.of(context).size.width/3.5,
+                      height: 40,
+                      child: Row(
+                        children: [
+                          Icon(Icons.calendar_today_outlined,color: Colors.orangeAccent,size: 17,),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text("${_formatteddate}",),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 Card(
                   child: Container(
-                    width:MediaQuery.of(context).size.width/4,
-                    height: 50,
+                    padding: EdgeInsets.only(left: 10),
+                    width:MediaQuery.of(context).size.width/3.5,
+                    height: 40,
                     child: Row(
                       children: [
-                        Icon(Icons.calendar_today_outlined,color: Colors.orangeAccent,size: 17,),
-                        Text('16/03/2020')
+                        Text('Today-${data1[0].duration}')
                       ],
                     ),
                   ),
                 ),
                 Card(
                   child: Container(
-                    width:MediaQuery.of(context).size.width/4,
-                    height: 50,
-                    child: Row(
-                      children: [
-                        Text(' Today-90min')
-                      ],
-                    ),
-                  ),
-                ),
-                Card(
-                  child: Container(
-                    width:MediaQuery.of(context).size.width/4,
-                    height: 50,
+                    padding: EdgeInsets.only(left: 5),
+                    width:MediaQuery.of(context).size.width/3.5,
+                    height: 40,
                     child: Row(
                       children: [
                         Icon(Icons.watch_later,color: Colors.orangeAccent,size: 17,),
-                        Text('16/03/2020')
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text('07:00'),
+                        )
                       ],
                     ),
                   ),
@@ -117,8 +219,7 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
                     ),
                     child: ListTile(
                       leading: Container(
-                          height: 200,
-                          child: Image.asset('images/banner.png')),
+                          child: Image.asset('images/banner.png',)),
                       // trailing: Icon(Icons.cancel_outlined,size: 12,),
                       title: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -323,8 +424,15 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
                 padding: const EdgeInsets.only(left: 5,right: 5),
                 child: Row(
                   children: [
-                    Text(
-                      'hhjjhjj',style: TextStyle(color: Colors.grey,),
+                    Container(
+                      padding: EdgeInsets.only(bottom: 5),
+                      width:200,
+                      child: TextFormField(
+                        style: TextStyle(color: Colors.grey),
+                        decoration: InputDecoration(
+                          border: InputBorder.none
+                        ),
+                      ),
                     ),
                     Spacer(),
                     Text('APPLY',style: TextStyle(color: Colors.red),)
@@ -337,23 +445,45 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                 Row(
-
-                   children: [
-                     Radio(
-                       activeColor: Colors.orangeAccent,
-
-                     ),
-                     Text('Payment On Delivery'),
-                   ],
+                 InkWell(
+                   onTap: (){
+                     setState(() {
+                       selectedRadio = 1;
+                     });
+                   },
+                   child: Row(
+                     children: [
+                       Radio(
+                         activeColor: Colors.orangeAccent,
+                         value: 1,
+                         groupValue: selectedRadio,
+                           onChanged: (val) {
+                             setSelectedRadio(val);
+                           }
+                       ),
+                       Text('Payment On Delivery'),
+                     ],
+                   ),
                  ),
-                  Row(
-                    children: [
-                      Radio(
-                        activeColor: Colors.orangeAccent,
-                      ),
-                      Text('Cash On Delivery'),
-                    ],
+                  InkWell(
+                    onTap: (){
+                      setState(() {
+                        selectedRadio = 2;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Radio(
+                          activeColor: Colors.orangeAccent,
+                          value: 2,
+                            groupValue: selectedRadio,
+                            onChanged: (val) {
+                              setSelectedRadio(val);
+                            }
+                        ),
+                        Text('Cash On Delivery'),
+                      ],
+                    ),
                   )
 
                 ],
@@ -437,10 +567,13 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5)),),
                     onPressed: (){
-                      // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
+                     setState(() {
+                       loading=true;
+                       order(data1[0].slotID);
+                     });
                     },
                     color: Colors.orangeAccent,
-                    child: Text('Place Order',style: TextStyle(color: Colors.white,fontSize: 17),),),
+                    child: loading==true?Container(width:50,height:50,child: CircularProgressIndicator(),):Text('Place Order',style: TextStyle(color: Colors.white,fontSize: 17),),),
                 ],
               ),
             ),

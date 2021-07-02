@@ -1,4 +1,5 @@
 import 'package:aov_farmage/ChangeAddress/ChnageAddress.dart';
+import 'package:aov_farmage/ChooseDeliveryOption/ChooseDeliveryOption.dart';
 import 'package:aov_farmage/helper/http_services.dart';
 import 'package:flutter/material.dart';
 import 'package:aov_farmage/model/YourCartList/YourCartLIstData.dart';
@@ -34,6 +35,34 @@ class _YourCartState extends State<YourCart> {
           Fluttertoast.showToast(msg: res.message);
           my_cart();
           _isLoading=false;
+        });
+      }
+  }
+  Future<void>addToCart(String productID,String variantId)async{
+    var res=await _httpService.add_to_cart(productId: productID,variantId: variantId);
+    if(res.status==true)
+    {
+      setState(() {
+        Fluttertoast.showToast(msg: res.message);
+       _isLoading=false;
+      });
+    }
+  }
+  Future<void>subToCart(String productID,String variantId)async{
+    var res=await _httpService.sub_to_cart(productId: productID,variantId: variantId);
+    if(res.status==true)
+      {
+        setState(() {
+          Fluttertoast.showToast(msg: res.message);
+          _isLoading=false;
+        });
+      }
+    else if(res.status==false)
+      {
+        setState(() {
+          Fluttertoast.showToast(msg: res.message);
+          _isLoading=false;
+          Navigator.pop(context);
         });
       }
   }
@@ -143,50 +172,50 @@ class _YourCartState extends State<YourCart> {
                               Text('${data[index].mrp??''}',style: TextStyle(color: Colors.grey),),
                               Spacer(),
                               Container(
-                                width:30,
-                                height: 30,
-                                margin: EdgeInsets.only(right: 5),
+                                width: 25,
+                                height: 25,
                                 child: RaisedButton(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),),
                                   onPressed: (){
+                                    setState(() {
+                                      _isLoading=true;
+                                      subToCart(data[index].productID,data[index].variantID);
+                                    });
                                   },
                                   color: Colors.grey,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: Text('-',style: TextStyle(color: Colors.black,fontSize: 20),),
-                                  ),),
+                                  child: Text('-',style: TextStyle(color: Colors.black,),),),
                               ),
                               Container(
-                                width:30,
-                                height: 30,
+                                width:25,
+                                height: 25,
                                 //padding: EdgeInsets.only(left: 10,right: 10),
-                                 margin: EdgeInsets.only(right: 5),
+                                 //margin: EdgeInsets.only(right: 5),
                                 child: RaisedButton(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),),
                                   onPressed: (){
+
                                   },
                                   color: Colors.orangeAccent,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20),),
-                                  ),),
+                                  child: Text('1',style: TextStyle(color: Colors.white),),),
                               ),
                               Container(
-                                width:30,
-                                height: 30,
-                                //padding: EdgeInsets.only(left: 10,right: 10),
+                                width:25,
+                                height: 25,
                                 child: RaisedButton(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),),
                                   onPressed: (){
+                                    setState(() {
+                                      _isLoading=true;
+                                      addToCart(data[index].productID,data[index].variantID);
+                                    });
                                   },
                                   color: Colors.grey,
-                                  child: Text('+',style: TextStyle(color: Colors.black,fontSize: 20),),),
+                                  child: Text('+',style: TextStyle(color: Colors.black,),),),
                               ),
                               SizedBox(height: 10,)
-
                             ],
                           )
                         ],
@@ -417,7 +446,7 @@ class _YourCartState extends State<YourCart> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5)),),
                     onPressed: (){
-                      // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ChooseDeliveryOption()));
                     },
                     color: Colors.orangeAccent,
                     child: Row(

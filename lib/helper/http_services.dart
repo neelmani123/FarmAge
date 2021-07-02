@@ -6,12 +6,16 @@ import 'package:aov_farmage/EditProfile/profileModel.dart';
 import 'package:aov_farmage/helper/api_helper.dart';
 import 'package:aov_farmage/model/AddToCard/AddToCart.dart';
 import 'package:aov_farmage/model/CategoryListModel/CategoryListModel.dart';
+import 'package:aov_farmage/model/Slots/Slots.dart';
+import 'package:aov_farmage/model/SubToCart/SubToCart.dart';
+import 'package:aov_farmage/model/UserAddressLIst/UserAddressLIst.dart';
 import 'package:aov_farmage/model/YourCartList/YourCartList.dart';
 import 'package:aov_farmage/model/YourCartRemove/YourCartRemove.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:aov_farmage/model/RegisterMode/RegisterModel.dart';
 import 'package:aov_farmage/model/ChangeAddress/ChangeAddressModel.dart';
+import 'package:aov_farmage/model/Order/OrderModel.dart';
 
 class HttpServices {
   ApiBaseHelper _apiHelper = ApiBaseHelper();
@@ -160,6 +164,23 @@ Future<AddToCartModel>add_to_cart({String productId,String variantId})async{
     return null;
   }
 }
+Future<SubToCart>sub_to_cart({String productId,String variantId})async{
+    final prefs=await SharedPreferences.getInstance();
+    Map reqBody={
+      "jwtToken":prefs.getString('token'),
+      "product_id":productId,
+      "variant_id":variantId
+    };
+    final response=await _apiHelper.post('Users_api/sub_to_cart', reqBody);
+    try{
+      return SubToCart.fromJson(response);
+    }
+    catch(e)
+  {
+    showExceptionToast();
+    return null;
+  }
+}
 Future<YourCartListModel>my_cart()async{
     final prefs=await SharedPreferences.getInstance();
     Map reqBody={
@@ -210,6 +231,56 @@ Future<ChangeAddressModel>add_user_address({String location,String flatNo,String
     final response=await _apiHelper.post('Users_api/add_user_address', reqBody);
     try{
       return ChangeAddressModel.fromJson(response);
+    }
+    catch(e)
+  {
+    showExceptionToast();
+    return null;
+  }
+}
+//Working on slots
+Future<Slots>slots_list()async{
+    final prefs= await SharedPreferences.getInstance();
+    Map reqBody={
+      "jwtToken":prefs.getString('token')
+    };
+    final response=await _apiHelper.post('Users_api/slots_list', reqBody);
+    try{
+      return Slots.fromJson(response);
+    }
+    catch(e)
+  {
+    showExceptionToast();
+    return null;
+  }
+}
+Future<UserAddressList>user_address_list()async{
+    final prefs=await SharedPreferences.getInstance();
+    Map reqBody={
+      "jwtToken":prefs.getString('token')
+    };
+    final response=await _apiHelper.post('Users_api/user_address_list', reqBody);
+    try{
+      return UserAddressList.fromJson(response);
+  }
+  catch(e)
+  {
+    showExceptionToast();
+    return null;
+  }
+}
+Future<OrderModel>order({String date,String,slot,String address_id,String payment_mode})async{
+    final prefs=await SharedPreferences.getInstance();
+    Map reqBody={
+      "jwtToken":prefs.getString('token'),
+      "delivery_date":date,
+      "delivery_slot":slot,
+      "address_id":address_id,
+      "payment_method":payment_mode
+    };
+    final response=await _apiHelper.post('Users_api/order', reqBody);
+    try{
+      return OrderModel.fromJson(response);
     }
     catch(e)
   {

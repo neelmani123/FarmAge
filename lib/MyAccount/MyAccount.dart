@@ -1,5 +1,9 @@
+import 'package:aov_farmage/EditProfile/EditProfile.dart';
+import 'package:aov_farmage/helper/http_services.dart';
 import 'package:flutter/material.dart';
 import 'package:aov_farmage/Slider/PageSlider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:aov_farmage/EditProfile/profileModelData.dart';
 class MyAccount extends StatefulWidget {
   const MyAccount({Key key}) : super(key: key);
 
@@ -8,10 +12,30 @@ class MyAccount extends StatefulWidget {
 }
 
 class _MyAccountState extends State<MyAccount> {
+  bool _isLoading=true;
+  Data data;
+  HttpServices _httpService = HttpServices();
+  Future getProfileData()async{
+    var res= await _httpService.getProfile();
+    if(res.status==true)
+    {
+      setState(() {
+        _isLoading=false;
+        Fluttertoast.showToast(msg:res.message);
+        data=res.data;
+      });
+    }
+  }
+  @override
+  void initState() {
+    getProfileData();
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body:  _isLoading==true?Container(child: Center(child: CircularProgressIndicator(),),):SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +63,7 @@ class _MyAccountState extends State<MyAccount> {
             SizedBox(
               height: 40,
             ),
-            Row(
+           Row(
               children: [
                 Container(
                   padding: EdgeInsets.only(top: 10,left: 20),
@@ -48,7 +72,7 @@ class _MyAccountState extends State<MyAccount> {
                     backgroundColor: Colors.black,
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage("https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg"),
+                      backgroundImage: NetworkImage("${data.image??''}"),
                     ),
                   ),
                 ),
@@ -60,9 +84,7 @@ class _MyAccountState extends State<MyAccount> {
                     bottom: 20,
                     child: InkWell(
                       onTap: (){
-                        /*showModalBottomSheet(
-                                context: context,
-                                builder: (builder) => bottomSheet());*/
+                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context)=>EditProfile()));
                       },
                       child: Container(
                         child: Icon(Icons.edit,color: Colors.grey,),
@@ -74,15 +96,15 @@ class _MyAccountState extends State<MyAccount> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 20),
-                      child: Text('Your full name',style: TextStyle(fontSize:20,fontWeight: FontWeight.bold),),
+                      child: Text('${data.name??''}',style: TextStyle(fontSize:20,fontWeight: FontWeight.bold),),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 20,top: 10),
-                      child: Text('user@gmail.com',style: TextStyle(color: Colors.grey),),
+                      child: Text('${data.email??''}',style: TextStyle(color: Colors.grey),),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 20,top: 10),
-                      child: Text('9717816707',style: TextStyle(color: Colors.grey),),
+                      child: Text('${data.phone}',style: TextStyle(color: Colors.grey),),
                     ),
                   ],
                 ),

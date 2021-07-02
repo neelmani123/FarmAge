@@ -23,7 +23,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-bool _isLoading=true;
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isLoading=true;
   HttpServices _httpService = HttpServices();
   List<Data>data=[];
   Future<void>category_list_api()async{
@@ -46,15 +47,18 @@ bool _isLoading=true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       drawer: Drawer(
+
         child: ListView(
           children: [
             Container(
-              height: 100,
+              height: 150,
               child: DrawerHeader(
-                  child: CircleAvatar(
+                  /*child: CircleAvatar(
                     child: FlutterLogo(),
-                  )
+                  )*/
+                child: Image.asset('images/logo.png',width: 40,height: 40,),
               ),
             ),
             ListTile(
@@ -130,7 +134,7 @@ bool _isLoading=true;
               leading: Icon(Icons.person_outline_sharp,color: Colors.orangeAccent,),
               title: Text('TERMS & CONDITION',),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ChooseDeliveryOption()));
+
               },
             ),
             Divider(),
@@ -149,13 +153,16 @@ bool _isLoading=true;
         child:   Column(
           children: [
             SizedBox(height: 20,),
-            Image.asset('images/logo.png',width: 80,height: 80,),
+            Image.asset('images/logo.png',width: 50,height: 50,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(Icons.menu,color: Colors.black,),
+               IconButton(
+                 icon: Icon(Icons.menu),
+                 onPressed: ()=>scaffoldKey.currentState.openDrawer(),
+               ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 170),
+                  padding: const EdgeInsets.only(left: 150),
                   child: Icon(Icons.location_on,color: Colors.orangeAccent,),
                 ),
                /* Padding(
