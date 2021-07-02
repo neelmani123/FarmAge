@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>LoginOtpScreen(mobile: mobile_controller.text,)));
        });
       }
-    else if(res.message=="number is not regestered")
+    else if(res.status==false)
       {
         setState(() {
           _isLoading=false;
