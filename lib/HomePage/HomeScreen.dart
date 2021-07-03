@@ -1,4 +1,5 @@
 import 'package:aov_farmage/AddCart/AddCart.dart';
+import 'package:aov_farmage/AddressList/AddressList.dart';
 import 'package:aov_farmage/ChooseDeliveryOption/ChooseDeliveryOption.dart';
 import 'package:aov_farmage/ContactUs/ContactUs.dart';
 import 'package:aov_farmage/EditProfile/EditProfile.dart';
@@ -64,7 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: Icon(Icons.home,color: Colors.orangeAccent,),
               title: Text('Home',),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Wallet()));
+               // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Wallet()));
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
               },
             ),
             Divider(),
@@ -161,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
                  onPressed: ()=>scaffoldKey.currentState.openDrawer(),
                ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 150),
+                  padding: const EdgeInsets.only(left: 145),
                   child: Icon(Icons.location_on,color: Colors.orangeAccent,),
                 ),
                /* Padding(
@@ -271,8 +273,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text('BESTSELLER',style: TextStyle(fontSize:14,fontWeight: FontWeight.bold,),),
                   Spacer(),
-                  Text('SEE ALL',style: TextStyle(color: Colors.grey),),
-                  Icon(Icons.arrow_forward_ios,size: 15,)
+                  Text('SEE ALL',style: TextStyle(color: Colors.black,fontSize: 12),),
+                  Icon(Icons.arrow_forward_ios,size: 12,)
                 ],
               ),
             ),
@@ -365,8 +367,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text('EXPLORE BY CATEGORY',style: TextStyle(fontWeight: FontWeight.bold),),
                   Spacer(),
-                  Text('SEE ALL',style: TextStyle(color: Colors.grey),),
-                  Icon(Icons.arrow_forward_ios,size: 17,)
+                  Text('SEE ALL',style: TextStyle(color: Colors.black,fontSize: 12),),
+                  Icon(Icons.arrow_forward_ios,size: 12,)
                 ],
               ),
             ),
@@ -382,11 +384,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   itemBuilder: (context,index){
                     return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      ),
                       child: Container(
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset('images/banner.png'),
-                            Text('CLOD CUTS')
+                            Image.network('https://devclub.co.in/aov_farmage/admin/uploads/category/image1624704795.jpg',width: 100,),
+                            SizedBox(height: 10,),
+                            Text('CHICKEN',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey),)
                           ],
                         ),
                       )
@@ -492,6 +500,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Container(
+
               height: 210,
               width: MediaQuery.of(context).size.width,
               child: ListView.builder(
@@ -505,8 +514,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Container(
                             height: 100,
-                            width: 270,
+                            width: 250,
                             decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(topRight: Radius.circular(15),topLeft: Radius.circular(15)),
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
                                     image: AssetImage('images/banner.png')
@@ -554,14 +564,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: 7,
                   itemBuilder: (context,index){
                     return  Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.redAccent)
+                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             height: 100,
-                            width: 270,
+                            width: 200,
                             decoration: BoxDecoration(
+
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
                                     image: AssetImage('images/banner.png')
@@ -569,7 +583,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 50,top: 5),
+                            padding: const EdgeInsets.only(left: 10,top: 5),
                             child: Text('Making The Perfect Biryani',style: TextStyle(fontWeight: FontWeight.bold),),
                           ),
                         ],

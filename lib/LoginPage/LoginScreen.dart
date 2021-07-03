@@ -23,14 +23,13 @@ class _LoginScreenState extends State<LoginScreen> {
     String validate = validateMobile(mobile_controller.text);
     if (validate == null) {
       login_api();
-
     }else{
       Fluttertoast.showToast(msg: validate);
     }
   }
   Future<void> login_api()async{
     var res=await _httpService.user_login(number: mobile_controller.text);
-    if(res.status==true)
+    if(res.type=='login')
       {
        setState(() {
          _isLoading=false;
@@ -38,20 +37,21 @@ class _LoginScreenState extends State<LoginScreen> {
          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>LoginOtpScreen(mobile: mobile_controller.text,)));
        });
       }
-    else if(res.status==false)
+    else if(res.type=='regester')
       {
         setState(() {
           _isLoading=false;
           Fluttertoast.showToast(msg: res.message);
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>RegisterOtpScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>RegisterOtpScreen(mobileno: mobile_controller.text,)));
         });
       }
   }
+
   String validateMobile(String value) {
     String pattern = r'(^([9876]{1})([0-9]{9})$)';
+    _isLoading=false;
     RegExp regExp = new RegExp(pattern);
     if (value.length == 0) {
-      _isLoading=false;
       return 'Please enter mobile number';
     } else if (!regExp.hasMatch(value)) {
       _isLoading=false;
@@ -59,7 +59,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return null;
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

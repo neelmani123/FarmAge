@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 class RegisterOtpScreen extends StatefulWidget {
-  const RegisterOtpScreen({Key key}) : super(key: key);
+  final mobileno;
+  const RegisterOtpScreen({this.mobileno,Key key}) : super(key: key);
 
   @override
   _RegisterOtpScreenState createState() => _RegisterOtpScreenState();
@@ -47,6 +48,12 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>RegisterScreen()));
      });
     }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    mobile_controller.text=widget.mobileno;
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
@@ -108,7 +115,7 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
                   child:  _isLoading==true ?Container(height:20,width:20,child: CircularProgressIndicator(),):Text('VERIFY OTP',style: TextStyle(color: Colors.white,fontSize: 17),),),
               ),
             ),
-            SizedBox(height: 30,),
+            SizedBox(height: 40,),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,

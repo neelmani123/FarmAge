@@ -47,6 +47,7 @@ if(_userId!=null &&_userId!='')
   {
     print("User Id is:${_userId}");
     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
+   // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>LoginScreen()));
 
   }
 else{
@@ -56,15 +57,15 @@ else{
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      /*child: SplashScreen(
+      child: SplashScreen(
         seconds: 7,
-        image:  Image.asset('images/splash.png',),
-        photoSize: 300.0,
-
-      ),*/
-      child: Image.asset('images/splash1.jpg',fit: BoxFit.cover,),
+        image:  Image.asset('images/logo.png',),
+        photoSize: 200.0,
+      ),
+     // child: Image.asset('images/logo.png',),
     );
   }
 }

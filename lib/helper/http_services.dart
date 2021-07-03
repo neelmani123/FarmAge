@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:aov_farmage/model/RegisterMode/RegisterModel.dart';
 import 'package:aov_farmage/model/ChangeAddress/ChangeAddressModel.dart';
 import 'package:aov_farmage/model/Order/OrderModel.dart';
+import 'package:aov_farmage/model/AddressList/AddressList.dart';
 
 class HttpServices {
   ApiBaseHelper _apiHelper = ApiBaseHelper();
@@ -288,5 +289,21 @@ Future<OrderModel>order({String date,String,slot,String address_id,String paymen
     return null;
   }
 }
+Future<AddressList>address_list()async{
+    final prefs=await SharedPreferences.getInstance();
+    Map reqBody={
+      "jwtToken":prefs.getString('token')
+    };
+    final response=await _apiHelper.post('Users_api/user_address_list', reqBody);
+    try{
+      return AddressList.fromJson(response);
+    }
+    catch(e)
+  {
+    showExceptionToast();
+    return null;
+  }
+  }
 }
+
 

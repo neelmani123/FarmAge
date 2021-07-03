@@ -1,6 +1,8 @@
+import 'package:aov_farmage/AddressList/AddressList.dart';
 import 'package:aov_farmage/ChangeAddress/ChnageAddress.dart';
 import 'package:aov_farmage/ChooseDeliveryOption/ChooseDeliveryOption.dart';
 import 'package:aov_farmage/helper/http_services.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:aov_farmage/model/YourCartList/YourCartLIstData.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -102,7 +104,7 @@ class _YourCartState extends State<YourCart> {
             ),
             Container(
               width: MediaQuery.of(context).size.width,
-              height: 400,
+              height: 180,
               child: ListView.builder(
                 itemCount: data.length,
                   itemBuilder: (context,index){
@@ -112,9 +114,7 @@ class _YourCartState extends State<YourCart> {
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                     child: ListTile(
-                      leading: Container(
-                          height: 200,
-                          child: Image.network('${data[index].productImage??''}',fit: BoxFit.cover,)),
+                      leading: Image.network('${data[index].productImage??''}',height: 200,),
                       // trailing: Icon(Icons.cancel_outlined,size: 12,),
                       title: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -127,14 +127,14 @@ class _YourCartState extends State<YourCart> {
                                 Text('${data[index].productName??''}',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
                                 Spacer(),
                                 InkWell(
-                                  onTap: ()
-                                  {
-                                    setState(() {
-                                      _isLoading=true;
-                                      remove_cart(data[index].productID, data[index].variantID);
-                                    });
+                                    onTap: ()
+                                    {
+                                      setState(() {
+                                        _isLoading=true;
+                                        remove_cart(data[index].productID, data[index].variantID);
+                                      });
 
-                                  },
+                                    },
                                     child: Icon(Icons.clear,size: 15,color: Colors.grey,))
                               ],
                             ),
@@ -171,49 +171,54 @@ class _YourCartState extends State<YourCart> {
                               Icon(Icons.link,size: 17,color: Colors.grey,),
                               Text('${data[index].mrp??''}',style: TextStyle(color: Colors.grey),),
                               Spacer(),
-                              Container(
-                                width: 25,
-                                height: 25,
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                    setState(() {
-                                      _isLoading=true;
-                                      subToCart(data[index].productID,data[index].variantID);
-                                    });
-                                  },
-                                  color: Colors.grey,
-                                  child: Text('-',style: TextStyle(color: Colors.black,),),),
+                              InkWell(
+                                onTap: (){
+                                  setState(() {
+                                    _isLoading=true;
+                                    subToCart(data[index].productID,data[index].variantID);
+                                  });
+                                },
+                                child: Container(
+                                  width:25,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.grey
+                                  ),
+                                  //margin: EdgeInsets.only(left:130,right: 15),
+                                  padding: EdgeInsets.only(left: 8),
+                                  child:Text('-',style: TextStyle(color: Colors.black,fontSize: 20),),
+                                ),
                               ),
                               Container(
                                 width:25,
                                 height: 25,
-                                //padding: EdgeInsets.only(left: 10,right: 10),
-                                 //margin: EdgeInsets.only(right: 5),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-
-                                  },
-                                  color: Colors.orangeAccent,
-                                  child: Text('1',style: TextStyle(color: Colors.white),),),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.orangeAccent
+                                ),
+                                //margin: EdgeInsets.only(left:130,right: 15),
+                                padding: EdgeInsets.only(left: 7,top: 5),
+                                child:Text('1',style: TextStyle(color: Colors.black,fontSize: 15),),
                               ),
-                              Container(
-                                width:25,
-                                height: 25,
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                    setState(() {
-                                      _isLoading=true;
-                                      addToCart(data[index].productID,data[index].variantID);
-                                    });
-                                  },
-                                  color: Colors.grey,
-                                  child: Text('+',style: TextStyle(color: Colors.black,),),),
+                              InkWell(
+                                onTap: (){
+                                  setState(() {
+                                    _isLoading=true;
+                                    addToCart(data[index].productID,data[index].variantID);
+                                  });
+                                },
+                                child: Container(
+                                  width:25,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.grey
+                                  ),
+                                  //margin: EdgeInsets.only(left:130,right: 15),
+                                  padding: EdgeInsets.only(left: 7),
+                                  child:Text('+',style: TextStyle(color: Colors.black,fontSize: 20),),
+                                ),
                               ),
                               SizedBox(height: 10,)
                             ],
@@ -274,19 +279,16 @@ class _YourCartState extends State<YourCart> {
                                 Text('Lamb kebabs',style: TextStyle(fontWeight: FontWeight.bold),),
                                 //Spacer(),
                                 Container(
-                                  width:30,
-                                  height: 30,
+                                  width:25,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.grey
+                                  ),
                                   margin: EdgeInsets.only(left:130,right: 15),
-                                  //padding: EdgeInsets.only(left: 50),
-                                  child: RaisedButton(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                    onPressed: (){
-                                    },
-                                    color: Colors.grey,
-                                    child: Text('+',style: TextStyle(color: Colors.black,fontSize: 20),),),
+                                  padding: EdgeInsets.only(left: 7),
+                                  child:Text('+',style: TextStyle(color: Colors.black,fontSize: 20),),
                                 ),
-
                               ],
                             ),
                           ),
@@ -315,10 +317,10 @@ class _YourCartState extends State<YourCart> {
                                 Icon(Icons.money,size: 20,),
                                 Text('200'),
                                 Container(
-                                  width:150,
-                                  height: 20,
+                                  width:120,
+                                  height: 25,
                                   padding: EdgeInsets.only(left: 10,right: 10),
-                                  margin: EdgeInsets.only(left: 60,),
+                                  margin: EdgeInsets.only(left: 90,),
                                   child: RaisedButton(
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(Radius.circular(20)),),
@@ -326,7 +328,7 @@ class _YourCartState extends State<YourCart> {
                                       // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
                                     },
                                     color: Colors.orangeAccent,
-                                    child: Text('Add To Card',style: TextStyle(color: Colors.white,fontSize: 17),),),
+                                    child: Text('Add To Card',style: TextStyle(color: Colors.white,fontSize: 12),),),
                                 ),
                               ],
                             ),
@@ -340,68 +342,72 @@ class _YourCartState extends State<YourCart> {
               height: 200,
               width: MediaQuery.of(context).size.width,
               child: Card(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40,top: 10),
-                      child: Text('PAYMENT DETAILS',style: TextStyle(fontWeight: FontWeight.bold),),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text('SUBTOTAL'),
-                          Spacer(),
-                          Text('1990',style: TextStyle(color: Colors.black),)
-                        ],
+                child: DottedBorder(
+                  color: Colors.grey,
+                  strokeWidth: 2,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40,top: 10),
+                        child: Text('PAYMENT DETAILS',style: TextStyle(fontWeight: FontWeight.bold),),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text('1 MONTH PLAN'),
-                          Spacer(),
-                          Text('99',style: TextStyle(color: Colors.black),)
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text('SUBTOTAL'),
+                            Spacer(),
+                            Text('1990',style: TextStyle(color: Colors.black),)
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text('DELIVERY CHARGE'),
-                          Spacer(),
-                          Text('0',style: TextStyle(color: Colors.black),)
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text('1 MONTH PLAN'),
+                            Spacer(),
+                            Text('99',style: TextStyle(color: Colors.black),)
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0,left: 8),
-                      child: Row(
-                        children: [
-                          Text('FREE DELIVERY',style: TextStyle(fontWeight: FontWeight.bold),),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text('DELIVERY CHARGE'),
+                            Spacer(),
+                            Text('0',style: TextStyle(color: Colors.black),)
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0,left: 8,right: 8),
-                      child: Divider(
-                        thickness: 2,
-                      )
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text('Total'),
-                          Spacer(),
-                          Text('1100',style: TextStyle(color: Colors.black),)
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.only(top: 0,left: 8),
+                        child: Row(
+                          children: [
+                            Text('FREE DELIVERY',style: TextStyle(fontWeight: FontWeight.bold),),
+                          ],
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 0,left: 8,right: 8),
+                        child: Divider(
+                          thickness: 2,
+                        )
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text('Total'),
+                            Spacer(),
+                            Text('1100',style: TextStyle(color: Colors.black),)
+                          ],
+                        ),
+                      ),
 
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -414,7 +420,7 @@ class _YourCartState extends State<YourCart> {
                     Text('Shipping Address'),
                     Spacer(),
                     Container(
-                      width:180,
+                      width:165,
                       height: 40,
                       padding: EdgeInsets.only(left: 10,right: 10),
                       margin: EdgeInsets.only(left: 60,),
@@ -422,13 +428,13 @@ class _YourCartState extends State<YourCart> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5)),),
                         onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ChangeAddress()));
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>AddressList()));
                         },
                         color: Colors.orangeAccent,
                         child: Row(
                           children: [
                             Icon(Icons.add,color: Colors.white,),
-                            Text('Add Address',style: TextStyle(color: Colors.white,fontSize: 17),),
+                            Text('Add Address',style: TextStyle(color: Colors.white,fontSize: 15),),
                           ],
                         ),),
                     ),

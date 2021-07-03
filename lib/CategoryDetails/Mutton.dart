@@ -50,8 +50,10 @@ class _MuttonState extends State<Mutton> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 10,),
           Container(
-            height: 630,
+            height: 620,
+            padding: EdgeInsets.only(left: 5,right: 5),
             child: ListView.builder(
               itemCount: data.length,
                 itemBuilder: (context,index){
@@ -70,7 +72,7 @@ class _MuttonState extends State<Mutton> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.network('${data[index].productImage??''}',fit: BoxFit.fitHeight
+                    Image.network('${data[index].productImage??''}',width:MediaQuery.of(context).size.width,height: 270,fit: BoxFit.cover
                       ,),
                     Padding(
                       padding: const EdgeInsets.only(left: 15),
@@ -132,14 +134,14 @@ class _MuttonState extends State<Mutton> {
                               children: [
                                 RaisedButton(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),),
+                                    borderRadius: BorderRadius.all(Radius.circular(20)),),
                                   onPressed: (){
                                     setState(() {
                                       addToCart(data[index].productID);
                                     });
                                   },
                                   color: Colors.orangeAccent,
-                                  child: Text('Add To Cart',style: TextStyle(color: Colors.white,fontSize: 17),),),
+                                  child: Text('Add To Cart',style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.bold),),),
                               ],
                             ),
                           ),
@@ -155,7 +157,10 @@ class _MuttonState extends State<Mutton> {
             thickness: 3,
           ),
           Center(
-            child: Text('Out Of Stock',style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Text('Out Of Stock',style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
+            ),
           )
         ],
       )

@@ -1,11 +1,13 @@
 import 'package:aov_farmage/helper/http_services.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:aov_farmage/model/Slots/SlotsData.dart';
 class ChooseDeliveryOption extends StatefulWidget {
-  const ChooseDeliveryOption({Key key}) : super(key: key);
+  final List data;
+  const ChooseDeliveryOption({this.data,Key key}) : super(key: key);
 
   @override
   _ChooseDeliveryOptionState createState() => _ChooseDeliveryOptionState();
@@ -14,7 +16,7 @@ class ChooseDeliveryOption extends StatefulWidget {
 class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
   DateTime _date = DateTime.now();
   bool _isLoading=true;
-  bool loading=true;
+  bool loading;
   String _formatteddate="";
   List<Data>data1=[];
   int selectedRadio;
@@ -209,7 +211,7 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
             ),
             Container(
               width: MediaQuery.of(context).size.width,
-              height: 300,
+              height: 200,
               child: ListView(
                 children: [
                   Card(
@@ -219,102 +221,8 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
                     ),
                     child: ListTile(
                       leading: Container(
-                          child: Image.asset('images/banner.png',)),
+                          child: Image.network('https://devclub.co.in/aov_farmage/admin/uploads/products/product1624260977.jpg',)),
                       // trailing: Icon(Icons.cancel_outlined,size: 12,),
-                      title: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text('Boneless Cubes',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              children: [
-                                Text('No of Pieces:20',style: TextStyle(color: Colors.grey),),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 40),
-                                  child: Text('Serves:4',style: TextStyle(color: Colors.grey),),
-                                )
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              children: [
-                                Text('Gross Wt:467gms',style: TextStyle(color: Colors.grey),),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 22),
-                                  child: Text('Net wt:500gms',style: TextStyle(color: Colors.grey),),
-                                )
-                              ],
-                            ),
-                          ),
-                          Divider(
-                            color: Colors.black,
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.link,size: 17,color: Colors.grey,),
-                              Text('200',style: TextStyle(color: Colors.grey),),
-                              Spacer(),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //margin: EdgeInsets.only(left:10,right: 15),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.grey,
-                                  child: Text('-',style: TextStyle(color: Colors.black,fontSize: 20),),),
-                              ),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //padding: EdgeInsets.only(left: 10,right: 10),
-                                // margin: EdgeInsets.only(left:10,right: 15),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.orangeAccent,
-                                  child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20),),),
-                              ),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //padding: EdgeInsets.only(left: 10,right: 10),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.grey,
-                                  child: Text('+',style: TextStyle(color: Colors.black,fontSize: 20),),),
-                              ),
-                              SizedBox(height: 10,)
-
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: ListTile(
-                      leading: Container(
-                          height: 200,
-                          child: Image.asset('images/banner.png')),
                       title: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -493,68 +401,72 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
               height: 200,
               width: MediaQuery.of(context).size.width,
               child: Card(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40,top: 10),
-                      child: Text('PAYMENT DETAILS',style: TextStyle(fontWeight: FontWeight.bold),),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text('SUBTOTAL'),
-                          Spacer(),
-                          Text('1990',style: TextStyle(color: Colors.black),)
-                        ],
+                child: DottedBorder(
+                  color: Colors.grey,
+                  strokeWidth: 2,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40,top: 10),
+                        child: Text('PAYMENT DETAILS',style: TextStyle(fontWeight: FontWeight.bold),),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text('1 MONTH PLAN'),
-                          Spacer(),
-                          Text('99',style: TextStyle(color: Colors.black),)
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text('SUBTOTAL'),
+                            Spacer(),
+                            Text('1990',style: TextStyle(color: Colors.black),)
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text('DELIVERY CHARGE'),
-                          Spacer(),
-                          Text('0',style: TextStyle(color: Colors.black),)
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text('1 MONTH PLAN'),
+                            Spacer(),
+                            Text('99',style: TextStyle(color: Colors.black),)
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0,left: 8),
-                      child: Row(
-                        children: [
-                          Text('FREE DELIVERY',style: TextStyle(fontWeight: FontWeight.bold),),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text('DELIVERY CHARGE'),
+                            Spacer(),
+                            Text('0',style: TextStyle(color: Colors.black),)
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.only(top: 0,left: 8,right: 8),
-                        child: Divider(
-                          thickness: 2,
-                        )
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text('Total'),
-                          Spacer(),
-                          Text('1100',style: TextStyle(color: Colors.black),)
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.only(top: 0,left: 8),
+                        child: Row(
+                          children: [
+                            Text('FREE DELIVERY',style: TextStyle(fontWeight: FontWeight.bold),),
+                          ],
+                        ),
                       ),
-                    ),
+                      Padding(
+                          padding: const EdgeInsets.only(top: 0,left: 8,right: 8),
+                          child: Divider(
+                            thickness: 2,
+                          )
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text('Total'),
+                            Spacer(),
+                            Text('1100',style: TextStyle(color: Colors.black),)
+                          ],
+                        ),
+                      ),
 
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -573,7 +485,7 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
                      });
                     },
                     color: Colors.orangeAccent,
-                    child: loading==true?Container(width:50,height:50,child: CircularProgressIndicator(),):Text('Place Order',style: TextStyle(color: Colors.white,fontSize: 17),),),
+                    child: loading==true?Container(width:30,height:30,child: CircularProgressIndicator(),):Text('Place Order',style: TextStyle(color: Colors.white,fontSize: 17),),),
                 ],
               ),
             ),
