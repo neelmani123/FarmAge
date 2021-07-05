@@ -63,7 +63,6 @@ class _ThankYouState extends State<ThankYou> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text('Cash on Delivery',style: TextStyle(letterSpacing: 1,color: Colors.grey),),
                 ),
-
               ],
             )
           ],

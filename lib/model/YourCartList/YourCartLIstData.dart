@@ -1,4 +1,4 @@
-class Data {
+class Data1{
   String cartID;
   String userID;
   String productID;
@@ -16,7 +16,7 @@ class Data {
   String qty;
   String addedOn;
 
-  Data(
+  Data1(
       {this.cartID,
         this.userID,
         this.productID,
@@ -34,7 +34,7 @@ class Data {
         this.qty,
         this.addedOn});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  Data1.fromJson(Map<String, dynamic> json) {
     cartID = json['cartID'];
     userID = json['userID'];
     productID = json['productID'];

@@ -1,3 +1,4 @@
+import 'package:aov_farmage/ThankYou/ThankYou.dart';
 import 'package:aov_farmage/helper/http_services.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:aov_farmage/model/Slots/SlotsData.dart';
+import 'package:aov_farmage/model/YourCartList/YourCartLIstData.dart';
 class ChooseDeliveryOption extends StatefulWidget {
-  final List data;
-  const ChooseDeliveryOption({this.data,Key key}) : super(key: key);
+  final addressid;
+  const ChooseDeliveryOption({this.addressid,Key key}) : super(key: key);
 
   @override
   _ChooseDeliveryOptionState createState() => _ChooseDeliveryOptionState();
@@ -17,6 +19,7 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
   DateTime _date = DateTime.now();
   bool _isLoading=true;
   bool loading;
+  List<Data1>cartDetails=[];
   String _formatteddate="";
   List<Data>data1=[];
   int selectedRadio;
@@ -33,6 +36,48 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
           print("Duration is:${res.data}");
         });
       }
+  }
+  Future<void>my_cart()async{
+    var res=await _httpServices.my_cart();
+    if(res.status==true)
+    {
+      setState(() {
+        cartDetails=res.data;
+        _isLoading=false;
+        Fluttertoast.showToast(msg: res.message);
+        print("Data is:${cartDetails}");
+      });
+    }
+  }
+  Future<void>addToCart(String productID,String variantId)async{
+    var res=await _httpServices.add_to_cart(productId: productID,variantId: variantId);
+    if(res.status==true)
+    {
+      setState(() {
+        Fluttertoast.showToast(msg: res.message);
+        my_cart();
+        _isLoading=false;
+      });
+    }
+  }
+  Future<void>subToCart(String productID,String variantId)async{
+    var res=await _httpServices.sub_to_cart(productId: productID,variantId: variantId);
+    if(res.status==true)
+    {
+      setState(() {
+        Fluttertoast.showToast(msg: res.message);
+        my_cart();
+        _isLoading=false;
+      });
+    }
+    else if(res.status==false)
+    {
+      setState(() {
+        Fluttertoast.showToast(msg: res.message);
+        _isLoading=false;
+        Navigator.pop(context);
+      });
+    }
   }
   Future<Null> selectDate(BuildContext context) async {
     DateTime _datePicker = await showDatePicker(
@@ -73,12 +118,13 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
     }
   }
   Future<void>order(String slot)async{
-    var res=await _httpServices.order(date: _formatteddate,slot: slot,address_id: "1",payment_mode: choice);
+    var res=await _httpServices.order(date: _formatteddate,slot: slot,address_id: widget.addressid,payment_mode: choice);
     if(res.status==true)
       {
         setState(() {
           Fluttertoast.showToast(msg: res.message);
           loading=false;
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ThankYou()));
         });
       }
     else if(res.status==false)
@@ -90,6 +136,7 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
   @override
   void initState() {
     // TODO: implement initState
+    my_cart();
     slots_list();
     selectedRadio = 0;
     super.initState();
@@ -205,111 +252,123 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
                 children: [
                   Text('Order List',style: TextStyle(fontWeight: FontWeight.bold),),
                   Spacer(),
-                  Text('2 Items')
+                  Text('${cartDetails.length} items')
                 ],
               ),
             ),
             Container(
               width: MediaQuery.of(context).size.width,
-              height: 200,
-              child: ListView(
-                children: [
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: ListTile(
-                      leading: Container(
-                          child: Image.network('https://devclub.co.in/aov_farmage/admin/uploads/products/product1624260977.jpg',)),
-                      // trailing: Icon(Icons.cancel_outlined,size: 12,),
-                      title: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text('Boneless Cubes',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              children: [
-                                Text('No of Pieces:20',style: TextStyle(color: Colors.grey),),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 40),
-                                  child: Text('Serves:4',style: TextStyle(color: Colors.grey),),
-                                )
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              children: [
-                                Text('Gross Wt:467gms',style: TextStyle(color: Colors.grey),),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 22),
-                                  child: Text('Net wt:500gms',style: TextStyle(color: Colors.grey),),
-                                )
-                              ],
-                            ),
-                          ),
-                          Divider(
-                            color: Colors.black,
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.link,size: 17,color: Colors.grey,),
-                              Text('200',style: TextStyle(color: Colors.grey),),
-                              Spacer(),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //margin: EdgeInsets.only(left:10,right: 15),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.grey,
-                                  child: Text('-',style: TextStyle(color: Colors.black,fontSize: 20),),),
-                              ),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //padding: EdgeInsets.only(left: 10,right: 10),
-                                // margin: EdgeInsets.only(left:10,right: 15),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.orangeAccent,
-                                  child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20),),),
-                              ),
-                              Container(
-                                width:30,
-                                height: 30,
-                                //padding: EdgeInsets.only(left: 10,right: 10),
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),),
-                                  onPressed: (){
-                                  },
-                                  color: Colors.grey,
-                                  child: Text('+',style: TextStyle(color: Colors.black,fontSize: 20),),),
-                              ),
-                              SizedBox(height: 10,)
-
-                            ],
-                          )
-                        ],
+              height: 300,
+              child: ListView.builder(
+                itemCount: cartDetails.length,
+                  itemBuilder: (context,index){
+                    return  Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
-                    ),
-                  ),
-                ],
-              ),
+                      child: ListTile(
+                        leading: Container(
+                            child: Image.network('${cartDetails[index].productImage??''}',)),
+                        // trailing: Icon(Icons.cancel_outlined,size: 12,),
+                        title: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Text('${cartDetails[index].productName??''}',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Row(
+                                children: [
+                                  Text('No of Pieces:${cartDetails[index].qty}',style: TextStyle(color: Colors.grey),),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 40),
+                                    child: Text('Serves:${cartDetails[index].qty}',style: TextStyle(color: Colors.grey),),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Row(
+                                children: [
+                                  Text('Gross Wt:${cartDetails[index].unitValue}',style: TextStyle(color: Colors.grey),),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 22),
+                                    child: Text('Net wt:${cartDetails[index].unit}',style: TextStyle(color: Colors.grey),),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Divider(
+                              color: Colors.black,
+                            ),
+                            Row(
+                              children: [
+                                Icon(Icons.link,size: 17,color: Colors.grey,),
+                                Text('${cartDetails[index].mrp}',style: TextStyle(color: Colors.grey),),
+                                Spacer(),
+                                InkWell(
+                                  onTap: (){
+                                    setState(() {
+                                      _isLoading=true;
+                                      subToCart(cartDetails[index].productID,cartDetails[index].variantID);
+                                    });
+                                  },
+                                  child: Container(
+                                    width:25,
+                                    height: 25,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.grey
+                                    ),
+                                    //margin: EdgeInsets.only(left:130,right: 15),
+                                    padding: EdgeInsets.only(left: 8),
+                                    child:Text('-',style: TextStyle(color: Colors.black,fontSize: 20),),
+                                  ),
+                                ),
+                                Container(
+                                  width:25,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.orangeAccent
+                                  ),
+                                  //margin: EdgeInsets.only(left:130,right: 15),
+                                  padding: EdgeInsets.only(left: 7,top: 5),
+                                  child:Text('${cartDetails[index].qty}',style: TextStyle(color: Colors.black,fontSize: 15),),
+                                ),
+                                InkWell(
+                                  onTap: (){
+                                    setState(() {
+                                      _isLoading=true;
+                                      addToCart(cartDetails[index].productID,cartDetails[index].variantID);
+                                    });
+                                  },
+                                  child: Container(
+                                    width:25,
+                                    height: 25,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.grey
+                                    ),
+                                    //margin: EdgeInsets.only(left:130,right: 15),
+                                    padding: EdgeInsets.only(left: 7),
+                                    child:Text('+',style: TextStyle(color: Colors.black,fontSize: 20),),
+                                  ),
+                                ),
+                                SizedBox(height: 10,)
+
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  })
             ),
             SizedBox(height: 20,),
             Padding(
@@ -485,7 +544,7 @@ class _ChooseDeliveryOptionState extends State<ChooseDeliveryOption> {
                      });
                     },
                     color: Colors.orangeAccent,
-                    child: loading==true?Container(width:30,height:30,child: CircularProgressIndicator(),):Text('Place Order',style: TextStyle(color: Colors.white,fontSize: 17),),),
+                    child: loading==true?Container(width:20,height:20,child: CircularProgressIndicator(),):Text('Place Order',style: TextStyle(color: Colors.white,fontSize: 17),),),
                 ],
               ),
             ),

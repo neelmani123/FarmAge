@@ -3,7 +3,7 @@ import 'YourCartLIstData.dart';
 class YourCartListModel {
   bool status;
   String message;
-  List<Data> data;
+  List<Data1> data;
 
   YourCartListModel({this.status, this.message, this.data});
 
@@ -11,13 +11,12 @@ class YourCartListModel {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
-      data = new List<Data>();
+      data = new List<Data1>();
       json['data'].forEach((v) {
-        data.add(new Data.fromJson(v));
+        data.add(new Data1.fromJson(v));
       });
     }
   }
-
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;

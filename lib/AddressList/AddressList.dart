@@ -1,4 +1,6 @@
 import 'package:aov_farmage/ChangeAddress/ChnageAddress.dart';
+import 'package:aov_farmage/ChooseDeliveryOption/ChooseDeliveryOption.dart';
+import 'package:aov_farmage/YourCart/YourCart.dart';
 import 'package:aov_farmage/helper/http_services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -37,90 +39,7 @@ class _AddressListState extends State<AddressList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      /*decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage("Assets/Images/background.png"),
-              fit: BoxFit.cover)),*/
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.orangeAccent,
-          title: Text('Select Address'),
-          actions: [
-            IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (ctx) => ChangeAddress()));
-                }),
-          ],
-        ),
-        /*body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            InkWell(
-              onTap: ()
-              {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return PlacePicker(
-                        apiKey: apiKey,
-                        initialPosition: kInitialPosition,
-                        useCurrentLocation: true,
-                        selectInitialPosition: true,
-
-                        //usePlaceDetailSearch: true,
-                        onPlacePicked: (result) {
-                          selectedPlace = result;
-                          Navigator.of(context).pop();
-                          setState(() {});
-                          print(selectedPlace.formattedAddress);
-
-                        },
-
-                      );
-                    },
-                  ),
-                );
-
-              },
-              child: Container(
-                width: 190,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Color(0xFFFCE4EC),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.add,
-                      color: Color(pinkColor),
-                    ),
-                    Text(
-                      "Add New Address",
-                      style: TextStyle(
-                          color: Color(pinkColor),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Divider(
-              color: Colors.black,
-            ),
-            Expanded(
-              child: ListView(
-                children: [],
-              ),
-            )
-          ],
-        ),*/
         body: _isLoading
             ? Container(
           child: Center(
@@ -130,6 +49,36 @@ class _AddressListState extends State<AddressList> {
             : SafeArea(
           child: Column(
             children: [
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  height: 40,
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.orangeAccent,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Row(
+                      children: [
+                        Icon(Icons.arrow_back_ios,color: Colors.white,),
+                        Text('Add Address',style: TextStyle(color: Colors.white),),
+                        Spacer(),
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (ctx) => ChangeAddress()));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 20),
+                            child: Icon(Icons.add,color: Colors.white,size: 20,),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               Expanded(
                 child: ListView.builder(
                     itemCount: details.length,
@@ -190,20 +139,18 @@ class _AddressListState extends State<AddressList> {
               InkWell(
                 onTap: () async {
                   setState(() {
-                    // _isLoading = true;
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                YourCart(addressId: _selectedIndex,)));
                   });
-                 /* Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              PlaceOrder(address_id:_selectedIndex)));*/
-                  //  addAddress();
-                  Navigator.pop(context);
+                  // Navigator.pop(context);
                 },
                 child: Container(
                   width: double.infinity,
                   margin: EdgeInsets.only(
-                      top: 20, bottom: 10, left: 20, right: 20),
+                      top: 10, bottom: 10, left: 20, right: 20),
                   padding:
                   EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                   child: _isLoading == true

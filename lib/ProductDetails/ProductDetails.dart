@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:aov_farmage/CategoryDetails/ProductList/ProductListData.dart';
 class ProductDetails extends StatefulWidget {
-  const ProductDetails({Key key}) : super(key: key);
+  final List<Data> data1;
+  const ProductDetails({this.data1,Key key}) : super(key: key);
 
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
@@ -12,20 +14,18 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   void initState() {
     // TODO: implement initState
-
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: Container(
         width:MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height/1,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/banner.png'),
-            fit: BoxFit.cover
+            image: NetworkImage('https://devclub.co.in/aov_farmage/admin/uploads/products/product1624342420.jpg',),
+            fit: BoxFit.fill
           )
         ),
         child: Column(

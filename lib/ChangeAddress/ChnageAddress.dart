@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 class ChangeAddress extends StatefulWidget {
   const ChangeAddress({Key key}) : super(key: key);
 
@@ -77,14 +78,14 @@ class _ChangeAddressState extends State<ChangeAddress> {
             SizedBox(height: 200,),
             SlidingUpPanel(
              // minHeight: 30,
+              renderPanelSheet: true,
               maxHeight: MediaQuery.of(context).size.height,
-              minHeight: 200,
+              //minHeight: 300,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20.0),
                   topRight: Radius.circular(20.0)),
               panelBuilder: (sc) => _panel(sc),
             ),
-
           ],
         ),
       ),

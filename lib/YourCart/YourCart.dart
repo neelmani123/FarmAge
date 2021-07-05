@@ -7,15 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:aov_farmage/model/YourCartList/YourCartLIstData.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 class YourCart extends StatefulWidget {
-  const YourCart({Key key}) : super(key: key);
-
+  final addressId;
+  const YourCart({this.addressId,Key key}) : super(key: key);
   @override
   _YourCartState createState() => _YourCartState();
 }
 
 class _YourCartState extends State<YourCart> {
   bool _isLoading=true;
-  List<Data>data=[];
+  List<Data1>data=[];
   HttpServices _httpService = HttpServices();
   Future<void>my_cart()async{
     var res=await _httpService.my_cart();
@@ -46,6 +46,7 @@ class _YourCartState extends State<YourCart> {
     {
       setState(() {
         Fluttertoast.showToast(msg: res.message);
+        my_cart();
        _isLoading=false;
       });
     }
@@ -56,6 +57,7 @@ class _YourCartState extends State<YourCart> {
       {
         setState(() {
           Fluttertoast.showToast(msg: res.message);
+          my_cart();
           _isLoading=false;
         });
       }
@@ -104,7 +106,7 @@ class _YourCartState extends State<YourCart> {
             ),
             Container(
               width: MediaQuery.of(context).size.width,
-              height: 180,
+              height: 380,
               child: ListView.builder(
                 itemCount: data.length,
                   itemBuilder: (context,index){
@@ -155,10 +157,10 @@ class _YourCartState extends State<YourCart> {
                             padding: const EdgeInsets.only(top: 10),
                             child: Row(
                               children: [
-                                Text('Gross Wt:467gms',style: TextStyle(color: Colors.grey),),
+                                Text('Gross Wt:${data[index].unitValue}}',style: TextStyle(color: Colors.grey),),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 22),
-                                  child: Text('Net wt:500gms',style: TextStyle(color: Colors.grey),),
+                                  child: Text('Net wt:${data[index].unit}',style: TextStyle(color: Colors.grey),),
                                 )
                               ],
                             ),
@@ -199,7 +201,7 @@ class _YourCartState extends State<YourCart> {
                                 ),
                                 //margin: EdgeInsets.only(left:130,right: 15),
                                 padding: EdgeInsets.only(left: 7,top: 5),
-                                child:Text('1',style: TextStyle(color: Colors.black,fontSize: 15),),
+                                child:Text('${data[index].qty}',style: TextStyle(color: Colors.black,fontSize: 15),),
                               ),
                               InkWell(
                                 onTap: (){
@@ -452,7 +454,7 @@ class _YourCartState extends State<YourCart> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5)),),
                     onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ChooseDeliveryOption()));
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ChooseDeliveryOption(addressid: widget.addressId,)));
                     },
                     color: Colors.orangeAccent,
                     child: Row(
