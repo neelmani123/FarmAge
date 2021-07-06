@@ -6,6 +6,7 @@ import 'package:aov_farmage/EditProfile/profileModel.dart';
 import 'package:aov_farmage/helper/api_helper.dart';
 import 'package:aov_farmage/model/AddToCard/AddToCart.dart';
 import 'package:aov_farmage/model/CategoryListModel/CategoryListModel.dart';
+import 'package:aov_farmage/model/MyOrderLIst/MyOrderList.dart';
 import 'package:aov_farmage/model/Slots/Slots.dart';
 import 'package:aov_farmage/model/SubToCart/SubToCart.dart';
 import 'package:aov_farmage/model/UserAddressLIst/UserAddressLIst.dart';
@@ -303,6 +304,19 @@ Future<AddressList>address_list()async{
     showExceptionToast();
     return null;
   }
+  }
+  Future<MyOrderList>my_order_list()async{
+    final prefs=await SharedPreferences.getInstance();
+    Map reqBody={"jwtToken":prefs.getString('token')};
+    final response=await _apiHelper.post('Users_api/my_order_list', reqBody);
+    try{
+      return MyOrderList.fromJson(response);
+    }
+    catch(e)
+    {
+      showExceptionToast();
+      return null;
+    }
   }
 }
 

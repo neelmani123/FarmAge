@@ -75,197 +75,212 @@ class _ChangeAddressState extends State<ChangeAddress> {
                 ),
               ),
             ),
-            SizedBox(height: 200,),
-            SlidingUpPanel(
-             // minHeight: 30,
-              renderPanelSheet: true,
-              maxHeight: MediaQuery.of(context).size.height,
-              //minHeight: 300,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  topRight: Radius.circular(20.0)),
-              panelBuilder: (sc) => _panel(sc),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 200,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage('')
+                  )
+              ),
             ),
+            SingleChildScrollView(
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child: Text('Search for Area/Locality',style: TextStyle(color: Colors.grey,fontSize: 10),),
+                        ),
+                        Container(
+                            height: 40,
+                            margin: EdgeInsets.only(top: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.grey,
+                                style: BorderStyle.solid,
+                                width: 1.0,
+                              ),
+                              borderRadius: new BorderRadius.circular(10.0),
+                            ),
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.search,color: Colors.black,),
+                                  border: InputBorder.none,
+                                  hintText: 'New Delhi,Anand Vihar,Near Mertro Station',
+                                  hintStyle: TextStyle(color: Colors.black)
+                              ),
+                            )
+                        ),
+                        TextFormField(
+                          validator: (value)=>value.isEmpty?'Enter Building Name':null,
+                          controller: build_name,
+                          keyboardType:TextInputType.text,
+                          decoration: InputDecoration(
+                              hintText: 'Building name/Street name'
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          validator: (value)=>value.isEmpty?'Enter Location':null,
+                          keyboardType:TextInputType.text,
+                          controller: location,
+                          decoration: InputDecoration(
+                              hintText: 'Location'
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          validator: (value)=>value.isEmpty?'Enter Flat no':null,
+                          keyboardType:TextInputType.text,
+                          controller: flat_no,
+                          decoration: InputDecoration(
+                              hintText: 'Flat No'
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          validator: (value)=>value.isEmpty?'Enter Landmark':null,
+                          keyboardType:TextInputType.text,
+                          controller: landmark,
+                          decoration: InputDecoration(
+                              hintText: 'Landmark'
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          validator: (value)=>value.isEmpty?'Enter Address type':null,
+                          keyboardType:TextInputType.text,
+                          controller: address_type,
+                          decoration: InputDecoration(
+                              hintText: 'Address Type'
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          validator: (value){
+                            if(value.length!=6)
+                            {
+                              return 'Pincode must be 6 digit';
+                            }
+                            return null;
+                          },
+                          keyboardType:TextInputType.number,
+                          controller: pincode,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(6),
+                          ],
+                          decoration: InputDecoration(
+                              hintText: 'Pincode'
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          validator: (value)=>value.isEmpty?'Enter Latitude':null,
+                          keyboardType:TextInputType.number,
+                          controller: lant,
+                          decoration: InputDecoration(
+                              hintText: 'Latitude'
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          validator: (value)=>value.isEmpty?'Enter Longitute':null,
+                          keyboardType:TextInputType.number,
+                          controller: long,
+                          decoration: InputDecoration(
+                              hintText: 'Longitude'
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          validator: (value)=>value.isEmpty?'Enter Name':null,
+                          keyboardType:TextInputType.text,
+                          controller: person_name,
+                          decoration: InputDecoration(
+                              hintText: 'Person Name'
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          validator: (value){
+                            if(value.length!=10)
+                            {
+                              return 'Enter valid mobile number';
+                            }
+                            return null;
+                          },
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(10),
+                          ],
+                          keyboardType:TextInputType.number,
+                          controller: person_mobile,
+                          decoration: InputDecoration(
+                              hintText: 'Person Mobile'
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          validator: (value)=>value.isEmpty?'Enter Note':null,
+                          keyboardType:TextInputType.text,
+                          controller: note,
+                          decoration: InputDecoration(
+                              hintText: 'Note'
+                          ),
+                        ),
+                        SizedBox(height: 20,),
+                        Container(
+                          width: 100,
+                          height: 50,
+                          padding: EdgeInsets.only(left: 70,right: 70),
+                          //margin: EdgeInsets.only(left: 20,),
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(30)),),
+                            onPressed: (){
+                              setState(() {
+                                validateAndSave();
+                              });
+                            },
+                            color: Colors.orangeAccent,
+                            child: _isLoading==true ?Container(height:20,width:20,child: CircularProgressIndicator(),):Text('Save & Proceed',style: TextStyle(color: Colors.white,fontSize: 17),),),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            )
+            /*  SlidingUpPanel(
+               // minHeight: 30,
+                renderPanelSheet: true,
+                maxHeight: MediaQuery.of(context).size.height,
+                //minHeight: 300,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.0),
+                    topRight: Radius.circular(20.0)),
+                panelBuilder: (sc) => _panel(sc),
+              ),*/
           ],
         ),
       ),
 
     );
   }
-  Widget _panel(ScrollController sc){
+  /*Widget _panel(ScrollController sc){
     return MediaQuery.removePadding(context: context,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              controller:  sc,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 5),
-                  child: Text('Search for Area/Locality',style: TextStyle(color: Colors.grey,fontSize: 10),),
-                ),
-                Container(
-                    height: 40,
-                    margin: EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                        color: Colors.grey,
-                        style: BorderStyle.solid,
-                        width: 1.0,
-                      ),
-                      borderRadius: new BorderRadius.circular(10.0),
-                    ),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.search,color: Colors.black,),
-                          border: InputBorder.none,
-                          hintText: 'New Delhi,Anand Vihar,Near Mertro Station',
-                          hintStyle: TextStyle(color: Colors.black)
-                      ),
-                    )
-                ),
-                TextFormField(
-                  validator: (value)=>value.isEmpty?'Enter Building Name':null,
-                  controller: build_name,
-                  keyboardType:TextInputType.text,
-                  decoration: InputDecoration(
-                    hintText: 'Building name/Street name'
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextFormField(
-                  validator: (value)=>value.isEmpty?'Enter Location':null,
-                  keyboardType:TextInputType.text,
-                  controller: location,
-                  decoration: InputDecoration(
-                      hintText: 'Location'
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextFormField(
-                  validator: (value)=>value.isEmpty?'Enter Flat no':null,
-                  keyboardType:TextInputType.text,
-                  controller: flat_no,
-                  decoration: InputDecoration(
-                      hintText: 'Flat No'
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextFormField(
-                  validator: (value)=>value.isEmpty?'Enter Landmark':null,
-                  keyboardType:TextInputType.text,
-                  controller: landmark,
-                  decoration: InputDecoration(
-                      hintText: 'Landmark'
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextFormField(
-                  validator: (value)=>value.isEmpty?'Enter Address type':null,
-                  keyboardType:TextInputType.text,
-                  controller: address_type,
-                  decoration: InputDecoration(
-                      hintText: 'Address Type'
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextFormField(
-                  validator: (value){
-                    if(value.length!=6)
-                      {
-                        return 'Pincode must be 6 digit';
-                      }
-                    return null;
-                  },
-                  keyboardType:TextInputType.number,
-                  controller: pincode,
-                  inputFormatters: [
-                    WhitelistingTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(6),
-                  ],
-                  decoration: InputDecoration(
-                      hintText: 'Pincode'
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextFormField(
-                  validator: (value)=>value.isEmpty?'Enter Latitude':null,
-                  keyboardType:TextInputType.number,
-                  controller: lant,
-                  decoration: InputDecoration(
-                      hintText: 'Latitude'
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextFormField(
-                  validator: (value)=>value.isEmpty?'Enter Longitute':null,
-                  keyboardType:TextInputType.number,
-                  controller: long,
-                  decoration: InputDecoration(
-                      hintText: 'Longitude'
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextFormField(
-                  validator: (value)=>value.isEmpty?'Enter Name':null,
-                  keyboardType:TextInputType.text,
-                  controller: person_name,
-                  decoration: InputDecoration(
-                      hintText: 'Person Name'
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextFormField(
-                  validator: (value){
-                    if(value.length!=10)
-                      {
-                        return 'Enter valid mobile number';
-                      }
-                    return null;
-                  },
-                  inputFormatters: [
-                    WhitelistingTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(10),
-                  ],
-                  keyboardType:TextInputType.number,
-                  controller: person_mobile,
-                  decoration: InputDecoration(
-                      hintText: 'Person Mobile'
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextFormField(
-                  validator: (value)=>value.isEmpty?'Enter Note':null,
-                  keyboardType:TextInputType.text,
-                  controller: note,
-                  decoration: InputDecoration(
-                      hintText: 'Note'
-                  ),
-                ),
-                SizedBox(height: 20,),
-                Container(
-                  width: 100,
-                  height: 50,
-                  padding: EdgeInsets.only(left: 70,right: 70),
-                  //margin: EdgeInsets.only(left: 20,),
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30)),),
-                    onPressed: (){
-                      setState(() {
-                        validateAndSave();
-                      });
-                    },
-                    color: Colors.orangeAccent,
-                    child: _isLoading==true ?Container(height:20,width:20,child: CircularProgressIndicator(),):Text('Save & Proceed',style: TextStyle(color: Colors.white,fontSize: 17),),),
-                ),
-              ],
-            ),
-          ),
-        ));
-  }
+        child: );
+  }*/
 }
 
 

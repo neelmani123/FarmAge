@@ -16,9 +16,9 @@ import 'package:aov_farmage/model/CategoryListModel/CategoryListData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:aov_farmage/MyAccount/MyAccount.dart';
+import 'package:aov_farmage/MyOrder/MyOrder.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key key}) : super(key: key);
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -67,6 +67,14 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Wallet()));
                 Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.home,color: Colors.orangeAccent,),
+              title: Text('My Order',),
+              onTap: () {
+               // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Wallet()));
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>MyOrder()));
               },
             ),
             Divider(),
@@ -244,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 5),
-                              child: Text('${data[index].title??''}'),
+                              child: Text('${data[index].title??''}',style: TextStyle(fontSize: 12),),
                             )
                           ],
                         ),

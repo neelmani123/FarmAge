@@ -16,6 +16,7 @@ class YourCart extends StatefulWidget {
 class _YourCartState extends State<YourCart> {
   bool _isLoading=true;
   List<Data1>data=[];
+  bool visibilityTag = false;
   HttpServices _httpService = HttpServices();
   Future<void>my_cart()async{
     var res=await _httpService.my_cart();
@@ -36,6 +37,7 @@ class _YourCartState extends State<YourCart> {
         setState(() {
           Fluttertoast.showToast(msg: res.message);
           my_cart();
+          visibilityTag=true;
           _isLoading=false;
         });
       }
@@ -157,7 +159,7 @@ class _YourCartState extends State<YourCart> {
                             padding: const EdgeInsets.only(top: 10),
                             child: Row(
                               children: [
-                                Text('Gross Wt:${data[index].unitValue}}',style: TextStyle(color: Colors.grey),),
+                                Text('Gross Wt:${data[index].unitValue}',style: TextStyle(color: Colors.grey),),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 22),
                                   child: Text('Net wt:${data[index].unit}',style: TextStyle(color: Colors.grey),),

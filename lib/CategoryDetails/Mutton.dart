@@ -83,6 +83,7 @@ class _MuttonState extends State<Mutton> {
                     InkWell(
                       onTap:(){
                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ProductDetails(data1:data,)));
+
               },
                       child: Image.network('${data[index].productImage??''}',width:MediaQuery.of(context).size.width,height: 270,fit: BoxFit.cover
                         ,),
@@ -118,60 +119,64 @@ class _MuttonState extends State<Mutton> {
                         showDialog(
                             context: context,
                             builder: (BuildContext context){
-                              return AlertDialog(
-                                content: Container(
-                                  height: 200,
-                                  child: Column(
-                                    children: [
-                                      Text("Available quantities for",style: TextStyle(color: Colors.grey),),
-                                      SizedBox(height: 10,),
-                                      Text('${data[index].productName}',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
-                                      SizedBox(height: 20,),
-                                      Container(
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(1),
-                                            border: Border.all(
-                                              color: Colors.grey,
-                                            )
-                                        ),
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton(
-                                            isExpanded: true,
-                                            hint: Text('Select qty'),
-                                            value: selected,
-                                            items: data[index].productsVariant.map((item){
-                                              return new DropdownMenuItem(
-                                                  child: Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(left: 5),
-                                                        child: Text(item.weight??''),
+                              return StatefulBuilder(
+                                  builder: (context,setState){
+                                    return AlertDialog(
+                                      content: Container(
+                                        height: 200,
+                                        child: Column(
+                                          children: [
+                                            Text("Available quantities for",style: TextStyle(color: Colors.grey),),
+                                            SizedBox(height: 10,),
+                                            Text('${data[index].productName}',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+                                            SizedBox(height: 20,),
+                                            Container(
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(1),
+                                                  border: Border.all(
+                                                    color: Colors.grey,
+                                                  )
+                                              ),
+                                              child: DropdownButtonHideUnderline(
+                                                child: DropdownButton(
+                                                  isExpanded: true,
+                                                  hint: Text('Select qty'),
+                                                  value: selected,
+                                                  items: data[index].productsVariant.map((item){
+                                                    return new DropdownMenuItem(
+                                                      child: Row(
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 5),
+                                                            child: Text(item.weight??''),
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 15),
+                                                            child: Text(item.mrp??''),
+                                                          )
+                                                        ],
                                                       ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(left: 15),
-                                                        child: Text(item.mrp??''),
-                                                      )
-                                                    ],
-                                                  ),
-                                                value: item.id.toString(),
-                                              );
-                                            }).toList(),
-                                            onChanged: (val){
-                                              setState(() async{
-                                                selected=val;
-                                                print("Selected is:${selected}");
-                                                SharedPreferences _prefs=await SharedPreferences.getInstance();
-                                                _prefs.setString('variant_id',selected);
-                                                Navigator.pop(context);
-                                              });
-                                            },
-                                          ),
+                                                      value: item.id.toString(),
+                                                    );
+                                                  }).toList(),
+                                                  onChanged: (val){
+                                                    setState(() async{
+                                                      selected=val;
+                                                      print("Selected is:${selected}");
+                                                      SharedPreferences _prefs=await SharedPreferences.getInstance();
+                                                      _prefs.setString('variant_id',selected);
+                                                      Navigator.pop(context);
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
+                                    );
+                                  },
                               );
                             });
                       },

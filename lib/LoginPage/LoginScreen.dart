@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           _isLoading=false;
           Fluttertoast.showToast(msg: res.message);
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>RegisterOtpScreen(mobileno: mobile_controller.text,)));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context)=>RegisterOtpScreen(mobileno: mobile_controller.text,)));
         });
       }
   }

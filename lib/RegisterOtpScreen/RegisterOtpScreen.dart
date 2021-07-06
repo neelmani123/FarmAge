@@ -45,7 +45,7 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
      setState(() {
        _isLoading=false;
        Fluttertoast.showToast(msg: res.message);
-       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>RegisterScreen()));
+       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>RegisterScreen(mobile: mobile_controller.text,)));
      });
     }
   }

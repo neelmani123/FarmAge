@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key key}) : super(key: key);
+  final mobile;
+  const RegisterScreen({this.mobile,Key key}) : super(key: key);
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -51,6 +52,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context)=>HomeScreen()));
         });
       }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    phone_controller.text=widget.mobile;
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
@@ -121,6 +128,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               SizedBox(height: 20,),
               Container(
+                height: 60,
                   margin: EdgeInsets.only(left: 30,right: 30),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -152,26 +160,130 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   )
               ),
               SizedBox(height: 20,),
-              Container(
-                  margin: EdgeInsets.only(left: 30,right: 30),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                      color: Colors.grey,
-                      style: BorderStyle.solid,
+              InkWell(
+                onTap: (){
+                  showDialog(
+                      context: context,
+                      builder: (_) {
+                        int selectedRadio;
+                        return AlertDialog(
+                          title: Text(
+                            'Select Gender', textAlign: TextAlign.center,style: TextStyle( fontFamily: 'RobotoSlab',),),
+                          content: StatefulBuilder(
+                              builder: (BuildContext context,StateSetter setState)
+                              {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceEvenly,
+                                      children: [
+                                        Container(
+                                          child: Row(
+                                            children: [
+                                              Radio(value: 0,
+                                                  groupValue: selectedRadio,
+                                                  onChanged: (val) {
+                                                    gender_controller.text = "Male";
+                                                    setState(() => selectedRadio = val,
+                                                    );
+                                                  }),
+                                              Text("Male", style: TextStyle(fontFamily: 'RobotoSlab'),),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          child: Row(
+                                            children: [
+                                              Radio(value: 1,
+                                                  groupValue: selectedRadio,
+                                                  onChanged: (val) {
+                                                    gender_controller.text = "Female";
+                                                    setState(() => selectedRadio = val);
+                                                  }),
+                                              Text("Female", style: TextStyle(fontFamily: 'RobotoSlab'),),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                                              child: Text("Cancel", style: TextStyle(fontFamily: 'RobotoSlab'),),
+                                            ),
+                                          ),
+                                          SizedBox(width: 5,),
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                                              child: Text("OK", style: TextStyle(fontFamily: 'RobotoSlab'),),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+                          ),
+                        );
+                      }
+                  );
+                },
+                child: Container(
+                    margin: EdgeInsets.only(left: 30,right: 30),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.grey,
+                        style: BorderStyle.solid,
+                      ),
+                      borderRadius: new BorderRadius.circular(20.0),
                     ),
-                    borderRadius: new BorderRadius.circular(20.0),
-                  ),
-                  child: TextFormField(
-                    validator: (value)=>value.isEmpty?'Enter Gender':null,
-                    keyboardType: TextInputType.text,
-                    controller: gender_controller,
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.email,color: Colors.black,),
-                        border: InputBorder.none,
-                        hintText: 'Gender'
+                    child:IgnorePointer(
+                child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 47),
+                          child: Text('Gender'),
+                        ),
+                       // Spacer(),
+                        /*Padding(
+                          padding: const EdgeInsets.only(right: 20),
+                          child: Icon(Icons.arrow_drop_down,size: 30,),
+                        )*/
+                      ],
                     ),
-                  )
+                    TextFormField(
+                      controller: gender_controller,
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: Icon(Icons.person_outline,color: Colors.black,)
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        ),
+                ),
               ),
               // SizedBox(height: 10,),
               SizedBox(height: 30,),
